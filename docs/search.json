@@ -1,0 +1,281 @@
+[
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "🇳🇱 2023 Dutch Election Dashboard",
+    "section": "",
+    "text": "Methodology\nIn collaboration with Who Targets Me, we monitored 1071 political advertisers in Netherlands during the 2023 Dutch parliamentary election to better understand how campaigns use different targeting methods made available by Meta. To do this, we used data from the Meta Ad Library, using the new ‘Audience’ data which gives some detail on how pages target their ads.\nTo better understand the election, we kept only advertisers who:\n\nAdvertised in the last 7 days (Oct 24th - Oct 30th 2023)\nAdvertised in the last 30 days (Oct 1st - Oct 30th 2023)\n\n\n\n\n\n\n\nNote\n\n\n\nMeta only provides 7, 30 and 90 days windows for the targeting data in their Ad Library. Meta’s data also lags by a few days. Report will be updated as soon as new data is available.\n\n\nFor Google platforms, data accessed via the Google Transparency Report provides spending on how much money was spent by parties. In order to fit the Meta ranges, we also show the last seven and 30 days.\n\n\n\n\n\n\nDisclaimer\n\n\n\nThe data shown in this dashboard is based on the platform’s respective ad libraries which are known to be sometimes incomplete (Edelson et al. 2020; Silva et al. 2020). For this reason the data shown here might not reflect the full picture nor all political ads that were targeted at voters.\n\n\n\n\nAbout the Creator of the Dashboard\n\n\n\n\n\n\n\n\n\n\n\nFabio Votta is a Postdoc at the University of Amsterdam who studies (online) political microtargeting and its usage around the world.\n\n\n\n\n\n\n\n\n\n\n\nWant to see how political parties target you? Sign up at Who Targets Me and download the gratis browser plugin to see how parties on Facebook use your data:\nhttps://whotargets.me/\n\n\n\n\n\n\n\nWant to retrieve targeting data from the Facebook Ad Library yourself? This dashboard is powered by the R package: metatargetr. Check it out here:\nhttps://github.com/favstats/metatargetr\n\n\n\n\nElection Targeting Dashboards\nA list of election dashboards:\n\n🇳🇱 2021 Dutch parliamentary election (15th-17th March 2021)\n🇩🇪 2021 German federal election (26 September 2021)\n🇸🇪 2022 Swedish general election (11th September 2022)\n🇺🇸 2022 United States midterm elections (8th November 2022)\n🇺🇸 2022 United States midterm elections - Georgia Runoff (6th December 2022)\n🇮🇹 2023 Lazio & Lombardy regional election (12-13th February 2023)\n🇪🇪 2023 Estonian parliamentary election (5th March 2023)\n🇳🇱 2023 Dutch provincial elections (15th March 2023)\n🇲🇪 2023 Montenegrin presidential elections (19th March 2023) - 1st round\n🇦🇺 2023 New South Wales state election (25th March 2023)\n🇫🇮 2023 Finnish parliamentary election (2 April 2023)\n🇹🇷 2023 Turkish general election (14 May 2023) - Round 1\n🇩🇪 2023 Bremen State election (14 May 2023)\n🇬🇷 2023 Greek Legislative election (21 May 2023)\n🇹🇷 2023 Turkish Presidential election (14 May 2023) - Round 2\n🇲🇪 2023 Montenegrin parliamentary elections (11 June 2023)\n🇬🇷 2nd 2023 Greek Legislative election (25 May 2023)\n🇸🇰 2023 Slovak parliamentary election (30 September 2023)\n🇩🇪 2023 Bavarian state election (8 October 2023)\n🇩🇪 2023 Hessian state election (8 October 2023)\n🇳🇿 2023 New Zealand general election (14 October 2023)\n🇵🇱 2023 Polish parliamentary election (15 October 2023)\n🇺🇸 US Presidential Primaries (2023-2024)"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Blog",
+    "section": "",
+    "text": "No matching items"
+  },
+  {
+    "objectID": "spending.html",
+    "href": "spending.html",
+    "title": "Spending",
+    "section": "",
+    "text": "This section shows total and daily spending of political parties in the run-up to the 2023 Dutch parliamentary election for the latest available data."
+  },
+  {
+    "objectID": "targeting.html",
+    "href": "targeting.html",
+    "title": "Spending per Targeting Criteria",
+    "section": "",
+    "text": "This section shows spending per targeting criteria used by political parties to reach citizens in the run-up to the 2023 Dutch parliamentary election for the latest available data. It only includes targeting on Meta platforms (Facebook and Instagram), which offers the most detailed targeting options to political advertisers.\n\nHow much did campaigns spend on different targeting methods? The graphs below show spending overall across all parties and by party.\n\nNote: targeting criteria can overlap so the percentages do not sum up to 100%.\n\n\nOct 1st - Oct 30th 2023 (Last 30 days)Oct 24th - Oct 30th 2023 (Last 7 days)\n\n\n\nOverallBy Party\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nOverallBy Party"
+  },
+  {
+    "objectID": "targeting.html#spending-per-targeting-criteria",
+    "href": "targeting.html#spending-per-targeting-criteria",
+    "title": "Targeting",
+    "section": "Spending per Targeting Criteria",
+    "text": "Spending per Targeting Criteria\nHow much did campaigns spend on different targeting methods? The graphs below show spending overall across all parties and by party.\n\nNote: targeting criteria can overlap so the percentages do not sum up to 100%.\n\n\nOct 1st - Oct 30th 2023 (Last 30 days)Oct 24th - Oct 30th 2023 (Last 7 days)\n\n\n\nOverallBy Party\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nOverallBy Party"
+  },
+  {
+    "objectID": "targeting.html#top-targeted-detailed-audiences",
+    "href": "targeting.html#top-targeted-detailed-audiences",
+    "title": "Targeting",
+    "section": "Top Targeted (Detailed) Audiences",
+    "text": "Top Targeted (Detailed) Audiences\nHere, we show the top targeted audiences for each party for the “detailed” targeting that Meta offers (ranked by amount of Euro spend). Most (but not all) of these audiences are “interest” audiences, i.e. the parties targeted people interested in “Books” or “Politics”.\n\nOct 1st - Oct 30th 2023 (Last 30 days)Oct 24th - Oct 30th 2023 (Last 7 days)"
+  },
+  {
+    "objectID": "targeting.html#top-excluded-detailed-audiences",
+    "href": "targeting.html#top-excluded-detailed-audiences",
+    "title": "Targeting",
+    "section": "Top Excluded (Detailed) Audiences",
+    "text": "Top Excluded (Detailed) Audiences\nHere, we show the top excluded audiences for each party for the “detailed” targeting that Meta offers (ranked by amount of Euro spend). Most (but not all) of these audiences are “interest” audiences, i.e. the parties excluded people interested in “Books” or “Politics”.\n\nOct 1st - Oct 30th 2023 (Last 30 days)Oct 24th - Oct 30th 2023 (Last 7 days)\n\n\n\nNo data (yet).\n\n\n\n\nNo data (yet)."
+  },
+  {
+    "objectID": "targeting.html#top-contested-audiences",
+    "href": "targeting.html#top-contested-audiences",
+    "title": "Targeting",
+    "section": "Top Contested Audiences",
+    "text": "Top Contested Audiences\nHere, we show the top most contested audiences, i.e. where all parties have spent considerable amounts of money competing to reach voters with the same interests.\n\nOct 1st - Oct 30th 2023 (Last 30 days)Oct 24th - Oct 30th 2023 (Last 7 days)"
+  },
+  {
+    "objectID": "targeting.html#geographical-targeting",
+    "href": "targeting.html#geographical-targeting",
+    "title": "Targeting",
+    "section": "Geographical Targeting",
+    "text": "Geographical Targeting\nThe graphs below show various kinds of location targeting that parties engaged in on Meta platforms. The bigger the area the more money was spend by the party on targeting this location.\n\nOct 1st - Oct 30th 2023 (Last 30 days)\n\n\n\nPostal CodesProvincesCities\n\n\nThe graphs below shows postal code targeting that parties engaged in on Meta platforms.\n\nVVDCDAGroenLinks-PvdA"
+  },
+  {
+    "objectID": "targeting.html#geographical-exclusion",
+    "href": "targeting.html#geographical-exclusion",
+    "title": "Targeting",
+    "section": "Geographical Exclusion",
+    "text": "Geographical Exclusion\nOn Meta, political parties can also exclude certain geographical units. The graphs below show which locations were excluded from seeing political advertisements and how much money the parties spend on these ads. The bigger the area the more money was spend on ads excluding this location.\n\nOct 1st - Oct 30th 2023 (Last 30 days)\n\n\n\nPostal CodesProvincesCities\n\n\nThe graphs below shows postal code exclusion that parties engaged in on Meta platforms.\n\nCDA\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNo data (yet)."
+  },
+  {
+    "objectID": "targeting.html#age-targeting",
+    "href": "targeting.html#age-targeting",
+    "title": "Targeting",
+    "section": "Age Targeting",
+    "text": "Age Targeting\nThe graphs below show targeting by age groups and how much percentage of party budgets were spent on them.\n\nNote: targeting criteria can overlap so the percentages do not sum up to 100%.\n\n\nOct 1st - Oct 30th 2023 (Last 30 days)Oct 24th - Oct 30th 2023 (Last 7 days)"
+  },
+  {
+    "objectID": "targeting.html#gender-targeting",
+    "href": "targeting.html#gender-targeting",
+    "title": "Targeting",
+    "section": "Gender Targeting",
+    "text": "Gender Targeting\nThe graphs below show targeting by gender and how much percentage of party budgets were spent on them.\n\nNote: targeting criteria can overlap so the percentages do not sum up to 100%.\n\n\nOct 1st - Oct 30th 2023 (Last 30 days)Oct 24th - Oct 30th 2023 (Last 7 days)"
+  },
+  {
+    "objectID": "targeting.html#language-targeting",
+    "href": "targeting.html#language-targeting",
+    "title": "Targeting",
+    "section": "Language Targeting",
+    "text": "Language Targeting\nThe graphs below show targeting by language and how much percentage of party budgets were spent on them.\n\nNote: targeting criteria can overlap so the percentages do not sum up to 100%.\n\n\nOct 1st - Oct 30th 2023 (Last 30 days)Oct 24th - Oct 30th 2023 (Last 7 days)"
+  },
+  {
+    "objectID": "targeting.html#work-or-educational-institution-targeting",
+    "href": "targeting.html#work-or-educational-institution-targeting",
+    "title": "Targeting",
+    "section": "Work or Educational Institution Targeting",
+    "text": "Work or Educational Institution Targeting\nThe graphs below show targeting by job (sectors) or school/university and how much percentage of party budgets were spent on them. Check the next section for education levels targeting.\n\nNote: targeting criteria can overlap so the percentages do not sum up to 100%.\n\n\nOct 1st - Oct 30th 2023 (Last 30 days)Oct 24th - Oct 30th 2023 (Last 7 days)"
+  },
+  {
+    "objectID": "targeting.html#education-levels-targeting",
+    "href": "targeting.html#education-levels-targeting",
+    "title": "Targeting",
+    "section": "Education Levels Targeting",
+    "text": "Education Levels Targeting\nThe graphs below show targeting by education levels and how much percentage of party budgets were spent on them.\n\nOct 1st - Oct 30th 2023 (Last 30 days)Oct 24th - Oct 30th 2023 (Last 7 days)"
+  },
+  {
+    "objectID": "targeting.html#relationship-status-targeting",
+    "href": "targeting.html#relationship-status-targeting",
+    "title": "Targeting",
+    "section": "Relationship Status Targeting",
+    "text": "Relationship Status Targeting\nThe graphs below show targeting by relationship status and how much percentage of party budgets were spent on them.\n\nNote: targeting criteria can overlap so the percentages do not sum up to 100%.\n\n\nOct 1st - Oct 30th 2023 (Last 30 days)Oct 24th - Oct 30th 2023 (Last 7 days)\n\n\n\nNo data (yet).\n\n\n\n\nNo data (yet)."
+  },
+  {
+    "objectID": "spending.html#topline-statistics",
+    "href": "spending.html#topline-statistics",
+    "title": "Spending",
+    "section": "Topline Statistics",
+    "text": "Topline Statistics\n\n Meta Google Combined\n\n\n\nOct 1st - Oct 30th 2023 (Last 30 days)Oct 24th - Oct 30th 2023 (Last 7 days)\n\n\nIn total, political parties spend €211,816 and ran 2325 ads on Meta in this period.\n\n\n\n\n\n\n  \n    \n    \n      \n      Number of Advertisers\n      Top Spenders\n      Number of Ads\n      Total Spend\n    \n  \n  \n    GroenLinks-PvdA\n\n22\n\n1. GroenLinks-PvdA (€55,143)2. Jesse Klaver (€631)3. Partij van de Arbeid (PvdA) (€386)\n\n95\n\n€58,989\n\n    Volt Nederland\n\n1\n\n1. Volt Nederland (€34,758)\n\n196\n\n€34,758\n\n    CDA\n\n9\n\n1. CDA (€22,801)2. CDA Kampen (€100)3. CDA Opmeer (€100)\n\n1,485\n\n€23,601\n\n    BVNL\n\n4\n\n1. Wybren van Haga (€10,256)2. Belang van Nederland - BVNL (€5,149)3. Shohreh Feshtali - BVNL (€2,788)\n\n53\n\n€18,293\n\n    FvD\n\n2\n\n1. Forum voor Democratie -FVD (€10,634)2. Thierry Baudet (€6,729)\n\n36\n\n€17,363\n\n    D66\n\n2\n\n1. D66 (€16,242)2. D66 Rijswijk (€100)\n\n57\n\n€16,342\n\n    Ja21\n\n3\n\n1. Ja21 (€8,781)2. JA21 Noord-Holland (€2,277)3. JA21 Brabant (€100)\n\n54\n\n€11,158\n\n    SP\n\n8\n\n1. SP (€3,401)2. SP Jongeren (€1,657)3. Lilian Marijnissen (€1,254)\n\n87\n\n€7,212\n\n    DENK\n\n1\n\n1. DENK (€5,832)\n\n89\n\n€5,832\n\n    BBB\n\n1\n\n1. BBB BoerBurgerBeweging (€4,940)\n\n3\n\n€4,940\n\n    SGP\n\n2\n\n1. SGP (€4,435)2. SGP Jongeren Staphorst (€100)\n\n16\n\n€4,535\n\n    VVD\n\n8\n\n1. VVD (€2,584)2. VVD Gouda (€100)3. VVD Helmond (€100)\n\n127\n\n€3,284\n\n    PVV\n\n1\n\n1. Geert Wilders (€3,012)\n\n2\n\n€3,012\n\n    PvdD\n\n2\n\n1. Partij voor de Dieren (€1,246)2. Partij voor de Dieren Gemeente Groningen (€100)\n\n9\n\n€1,346\n\n    ChristenUnie\n\n5\n\n1. Arjan Langen - ChristenUnie (€197)2. ChristenUnie (€194)3. Mirjam Bikker (€100)\n\n9\n\n€691\n\n    50PLUS\n\n2\n\n1. 50PLUSpartij (€360)2. 50plus Rotterdam (€100)\n\n7\n\n€460\n\n  \n  \n  \n\n\n\n\n\n\nIn total, political parties spend €102,757 and ran 1362 ads on Meta in this period.\n\n\n\n\n\n\n  \n    \n    \n      \n      Number of Advertisers\n      Top Spenders\n      Number of Ads\n      Total Spend\n    \n  \n  \n    GroenLinks-PvdA\n\n13\n\n1. GroenLinks-PvdA (€33,081)2. Jesse Klaver (€293)3. Kim van Sparrentak (€160)\n\n45\n\n€34,534\n\n    D66\n\n1\n\n1. D66 (€13,691)\n\n41\n\n€13,691\n\n    FvD\n\n2\n\n1. Forum voor Democratie -FVD (€6,579)2. Thierry Baudet (€4,909)\n\n18\n\n€11,488\n\n    Volt Nederland\n\n1\n\n1. Volt Nederland (€11,003)\n\n144\n\n€11,003\n\n    CDA\n\n3\n\n1. CDA (€8,455)2. CDA Harlingen (€100)3. CDA Noordwijk-Noordwijkerhout-De Zilk (€100)\n\n832\n\n€8,655\n\n    Ja21\n\n2\n\n1. Ja21 (€4,220)2. JA21 Noord-Holland (€1,530)\n\n40\n\n€5,750\n\n    BVNL\n\n3\n\n1. Wybren van Haga (€2,464)2. Belang van Nederland - BVNL (€1,559)3. Shohreh Feshtali - BVNL (€819)\n\n40\n\n€4,842\n\n    SGP\n\n2\n\n1. SGP (€4,185)2. SGP Jongeren Staphorst (€100)\n\n12\n\n€4,285\n\n    DENK\n\n1\n\n1. DENK (€2,454)\n\n52\n\n€2,454\n\n    SP\n\n6\n\n1. SP Jongeren (€1,280)2. SP (€499)3. Lilian Marijnissen (€271)\n\n55\n\n€2,395\n\n    BBB\n\n1\n\n1. BBB BoerBurgerBeweging (€1,775)\n\n1\n\n€1,775\n\n    VVD\n\n4\n\n1. VVD (€473)2. VVD Gouda (€100)3. VVD De Bilt (€100)\n\n69\n\n€773\n\n    PvdD\n\n2\n\n1. Partij voor de Dieren (€541)2. Partij voor de Dieren Gemeente Groningen (€100)\n\n7\n\n€641\n\n    50PLUS\n\n1\n\n1. 50PLUSpartij (€271)\n\n3\n\n€271\n\n    ChristenUnie\n\n2\n\n1. Arjan Langen - ChristenUnie (€100)2. Mirjam Bikker (€100)\n\n3\n\n€200\n\n  \n  \n  \n\n\n\n\n\n\n\n\n\n\nOct 1st - Oct 30th 2023 (Last 30 days)Oct 24th - Oct 30th 2023 (Last 7 days)\n\n\nIn total, political parties spent €88,700 and ran 170 ad copies on Google in this timeframe.\n\n\n\n\n\n\n  \n    \n    \n      \n      Number of Ads\n      Top Spenders\n      Total Spend\n    \n  \n  \n    GroenLinks-PvdA\n\n16\n\n1. GroenLinks (€38,200)\n\n€38,200\n\n    Volt Nederland\n\n82\n\n1. Volt Nederland (€30,400)\n\n€30,400\n\n    D66\n\n7\n\n1. D66 (€9,250)\n\n€9,250\n\n    FvD\n\n3\n\n1. Forum voor Democratie (€5,150)\n\n€5,150\n\n    BBB\n\n14\n\n1. Marc-Michel Strijker (€2,700)\n\n€2,700\n\n    VVD\n\n13\n\n1. VVD (€1,200)\n\n€1,200\n\n    CDA\n\n32\n\n1. Christen Democratisch Appèl (€850)\n\n€850\n\n    ChristenUnie\n\n1\n\n1. ChristenUnie (€850)\n\n€850\n\n    SGP\n\n1\n\n1. Staatkundig Gereformeerde Partij (SGP) (€50)\n\n€50\n\n    SP\n\n1\n\n1. SP (Socialistische Partij) (€50)\n\n€50\n\n  \n  \n  \n\n\n\n\n\n\nIn total, political parties spent €51,250 and ran 142 ad copies on Google in this timeframe.\n\n\n\n\n\n\n  \n    \n    \n      \n      Number of Ads\n      Top Spenders\n      Total Spend\n    \n  \n  \n    GroenLinks-PvdA\n\n15\n\n1. GroenLinks (€21,900)\n\n€21,900\n\n    Volt Nederland\n\n67\n\n1. Volt Nederland (€10,450)\n\n€10,450\n\n    D66\n\n6\n\n1. D66 (€9,250)\n\n€9,250\n\n    FvD\n\n3\n\n1. Forum voor Democratie (€5,150)\n\n€5,150\n\n    BBB\n\n14\n\n1. Marc-Michel Strijker (€2,700)\n\n€2,700\n\n    ChristenUnie\n\n1\n\n1. ChristenUnie (€850)\n\n€850\n\n    CDA\n\n26\n\n1. Christen Democratisch Appèl (€650)\n\n€650\n\n    VVD\n\n8\n\n1. VVD (€200)\n\n€200\n\n    SGP\n\n1\n\n1. Staatkundig Gereformeerde Partij (SGP) (€50)\n\n€50\n\n    SP\n\n1\n\n1. SP (Socialistische Partij) (€50)\n\n€50\n\n  \n  \n  \n\n\n\n\n\n\n\n\n\n\nOct 1st - Oct 30th 2023 (Last 30 days)Oct 24th - Oct 30th 2023 (Last 7 days)\n\n\nIn total, political parties spent €300,516 and ran 2495 ad copies on digital platforms in this timeframe.\n\n\n\n\n\n\n  \n    \n    \n      \n      Total Spend\n      Number of Ads\n    \n  \n  \n    GroenLinks-PvdA\n\n€97,189\n\n111\n\n    Volt Nederland\n\n€65,158\n\n278\n\n    D66\n\n€25,592\n\n64\n\n    CDA\n\n€24,451\n\n1517\n\n    FvD\n\n€22,513\n\n39\n\n    BVNL\n\n€18,293\n\n53\n\n    Ja21\n\n€11,158\n\n54\n\n    BBB\n\n€7,640\n\n17\n\n    SP\n\n€7,262\n\n88\n\n    DENK\n\n€5,832\n\n89\n\n    SGP\n\n€4,585\n\n17\n\n    VVD\n\n€4,484\n\n140\n\n    PVV\n\n€3,012\n\n2\n\n    ChristenUnie\n\n€1,541\n\n10\n\n    PvdD\n\n€1,346\n\n9\n\n    50PLUS\n\n€460\n\n7\n\n  \n  \n  \n\n\n\n\n\n\nIn total, political parties spent €154,007 and ran 1504 ads on digital platforms in this timeframe.\n\n\n\n\n\n\n  \n    \n    \n      \n      Total Spend\n      Number of Ads\n    \n  \n  \n    GroenLinks-PvdA\n\n€56,434\n\n60\n\n    D66\n\n€22,941\n\n47\n\n    Volt Nederland\n\n€21,453\n\n211\n\n    FvD\n\n€16,638\n\n21\n\n    CDA\n\n€9,305\n\n858\n\n    Ja21\n\n€5,750\n\n40\n\n    BVNL\n\n€4,842\n\n40\n\n    BBB\n\n€4,475\n\n15\n\n    SGP\n\n€4,335\n\n13\n\n    DENK\n\n€2,454\n\n52\n\n    SP\n\n€2,445\n\n56\n\n    ChristenUnie\n\n€1,050\n\n4\n\n    VVD\n\n€973\n\n77\n\n    PvdD\n\n€641\n\n7\n\n    50PLUS\n\n€271\n\n3"
+  },
+  {
+    "objectID": "spending.html#spending-over-time",
+    "href": "spending.html#spending-over-time",
+    "title": "Spending",
+    "section": "Spending over Time",
+    "text": "Spending over Time\nDaily spending estimates might not be entirely accurate as reporting granularity differs (e.g. on Google minimum amounts of 50 Euro are displayed). For total estimates refer to the spending in the section above.\n\n Meta Google Combined\n\n\n\nCumulativeDaily\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nCumulativeDaily\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nCumulativeDaily"
+  },
+  {
+<<<<<<< HEAD
+    "objectID": "location.html",
+    "href": "location.html",
+    "title": "Location",
+    "section": "",
+    "text": "The graphs below show various kinds of location targeting that parties engaged in on Meta platforms.\n\nOct 1st - Oct 30th 2023 (Last 30 days)\n\n\n\nPostal CodesProvincesCities\n\n\nThe graphs below shows postal code targeting that parties engaged in on Meta platforms.\n\nVVDCDAGroenLinks-PvdA\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThe bigger the area the more money was spend by the party on targeting this location.\n\n\n\n\n\n\n\n\n\n\nThe bigger the area the more money was spend by the party on targeting this location."
+  },
+  {
+    "objectID": "location.html#geographical-targeting",
+    "href": "location.html#geographical-targeting",
+    "title": "Location",
+    "section": "",
+    "text": "The graphs below show various kinds of location targeting that parties engaged in on Meta platforms.\n\nOct 1st - Oct 30th 2023 (Last 30 days)\n\n\n\nPostal CodesProvincesCities\n\n\nThe graphs below shows postal code targeting that parties engaged in on Meta platforms.\n\nVVDCDAGroenLinks-PvdA\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThe bigger the area the more money was spend by the party on targeting this location.\n\n\n\n\n\n\n\n\n\n\nThe bigger the area the more money was spend by the party on targeting this location."
+  },
+  {
+    "objectID": "location.html#geographical-exclusion",
+    "href": "location.html#geographical-exclusion",
+    "title": "Location",
+    "section": "Geographical Exclusion",
+    "text": "Geographical Exclusion\nOn Meta, political parties can also exclude certain geographical units. The graphs below show which locations were excluded from seeing political advertisements and how much money the parties spend on these ads.\n\nOct 1st - Oct 30th 2023 (Last 30 days)\n\n\n\nPostal CodesProvincesCities\n\n\nThe graphs below shows postal code exclusion that parties engaged in on Meta platforms.\n\nCDA\n\n\n\n\n\n\n\n\n\n\n\n\n\nThe bigger the area the more money was spend on ads excluding this location.\n\n\n\nNo data (yet).\n\n\n\n\n\n\nThe bigger the area the more money was spend on ads excluding this location."
+  },
+  {
+    "objectID": "detailed.html",
+    "href": "detailed.html",
+    "title": "Detailed Audiences",
+    "section": "",
+    "text": "Here, we show the top targeted audiences for each party for the “detailed” targeting that Meta offers (ranked by amount of Euro spend). Most (but not all) of these audiences are “interest” audiences, i.e. the parties targeted people interested in “Books” or “Politics”.\n\nOct 1st - Oct 30th 2023 (Last 30 days)Oct 24th - Oct 30th 2023 (Last 7 days)"
+  },
+  {
+    "objectID": "detailed.html#top-targeted-detailed-audiences",
+    "href": "detailed.html#top-targeted-detailed-audiences",
+    "title": "Detailed Audiences",
+    "section": "",
+    "text": "Here, we show the top targeted audiences for each party for the “detailed” targeting that Meta offers (ranked by amount of Euro spend). Most (but not all) of these audiences are “interest” audiences, i.e. the parties targeted people interested in “Books” or “Politics”.\n\nOct 1st - Oct 30th 2023 (Last 30 days)Oct 24th - Oct 30th 2023 (Last 7 days)"
+  },
+  {
+    "objectID": "detailed.html#top-excluded-detailed-audiences",
+    "href": "detailed.html#top-excluded-detailed-audiences",
+    "title": "Detailed Audiences",
+    "section": "Top Excluded (Detailed) Audiences",
+    "text": "Top Excluded (Detailed) Audiences\nHere, we show the top excluded audiences for each party for the “detailed” targeting that Meta offers (ranked by amount of Euro spend). Most (but not all) of these audiences are “interest” audiences, i.e. the parties excluded people interested in “Books” or “Politics”.\n\nOct 1st - Oct 30th 2023 (Last 30 days)Oct 24th - Oct 30th 2023 (Last 7 days)\n\n\n\nNo data (yet).\n\n\n\n\nNo data (yet)."
+  },
+  {
+    "objectID": "detailed.html#top-contested-audiences",
+    "href": "detailed.html#top-contested-audiences",
+    "title": "Detailed Audiences",
+    "section": "Top Contested Audiences",
+    "text": "Top Contested Audiences\nHere, we show the top most contested audiences, i.e. where all parties have spent considerable amounts of money competing to reach voters with the same interests.\n\nOct 1st - Oct 30th 2023 (Last 30 days)Oct 24th - Oct 30th 2023 (Last 7 days)"
+  },
+  {
+=======
+>>>>>>> 4dc1bc3bb51b929681cd497dad13ff3875648f26
+    "objectID": "demographics.html",
+    "href": "demographics.html",
+    "title": "Demographics",
+    "section": "",
+    "text": "The graphs below show targeting by age groups and how much percentage of party budgets were spent on them.\n\nNote: targeting criteria can overlap so the percentages do not sum up to 100%.\n\n\nOct 1st - Oct 30th 2023 (Last 30 days)Oct 24th - Oct 30th 2023 (Last 7 days)"
+  },
+  {
+    "objectID": "demographics.html#age-targeting",
+    "href": "demographics.html#age-targeting",
+    "title": "Demographics",
+    "section": "",
+    "text": "The graphs below show targeting by age groups and how much percentage of party budgets were spent on them.\n\nNote: targeting criteria can overlap so the percentages do not sum up to 100%.\n\n\nOct 1st - Oct 30th 2023 (Last 30 days)Oct 24th - Oct 30th 2023 (Last 7 days)"
+  },
+  {
+    "objectID": "demographics.html#gender-targeting",
+    "href": "demographics.html#gender-targeting",
+    "title": "Demographics",
+    "section": "Gender Targeting",
+    "text": "Gender Targeting\nThe graphs below show targeting by gender and how much percentage of party budgets were spent on them.\n\nNote: targeting criteria can overlap so the percentages do not sum up to 100%.\n\n\nOct 1st - Oct 30th 2023 (Last 30 days)Oct 24th - Oct 30th 2023 (Last 7 days)"
+  },
+  {
+    "objectID": "demographics.html#language-targeting",
+    "href": "demographics.html#language-targeting",
+    "title": "Demographics",
+    "section": "Language Targeting",
+    "text": "Language Targeting\nThe graphs below show targeting by language and how much percentage of party budgets were spent on them.\n\nNote: targeting criteria can overlap so the percentages do not sum up to 100%.\n\n\nOct 1st - Oct 30th 2023 (Last 30 days)Oct 24th - Oct 30th 2023 (Last 7 days)"
+  },
+  {
+    "objectID": "demographics.html#work-or-educational-institution-targeting",
+    "href": "demographics.html#work-or-educational-institution-targeting",
+    "title": "Demographics",
+    "section": "Work or Educational Institution Targeting",
+    "text": "Work or Educational Institution Targeting\nThe graphs below show targeting by job (sectors) or school/university and how much percentage of party budgets were spent on them. Check the next section for education levels targeting.\n\nNote: targeting criteria can overlap so the percentages do not sum up to 100%.\n\n\nOct 1st - Oct 30th 2023 (Last 30 days)Oct 24th - Oct 30th 2023 (Last 7 days)"
+  },
+  {
+    "objectID": "demographics.html#education-levels-targeting",
+    "href": "demographics.html#education-levels-targeting",
+    "title": "Demographics",
+    "section": "Education Levels Targeting",
+    "text": "Education Levels Targeting\nThe graphs below show targeting by education levels and how much percentage of party budgets were spent on them.\n\nOct 1st - Oct 30th 2023 (Last 30 days)Oct 24th - Oct 30th 2023 (Last 7 days)"
+  },
+  {
+    "objectID": "demographics.html#relationship-status-targeting",
+    "href": "demographics.html#relationship-status-targeting",
+    "title": "Demographics",
+    "section": "Relationship Status Targeting",
+    "text": "Relationship Status Targeting\nThe graphs below show targeting by relationship status and how much percentage of party budgets were spent on them.\n\nNote: targeting criteria can overlap so the percentages do not sum up to 100%.\n\n\nOct 1st - Oct 30th 2023 (Last 30 days)Oct 24th - Oct 30th 2023 (Last 7 days)\n\n\n\nNo data (yet).\n\n\n\n\nNo data (yet)."
+<<<<<<< HEAD
+=======
+  },
+  {
+    "objectID": "detailed.html",
+    "href": "detailed.html",
+    "title": "Detailed Audiences",
+    "section": "",
+    "text": "Here, we show the top targeted audiences for each party for the “detailed” targeting that Meta offers (ranked by amount of Euro spend). Most (but not all) of these audiences are “interest” audiences, i.e. the parties targeted people interested in “Books” or “Politics”.\n\nOct 1st - Oct 30th 2023 (Last 30 days)Oct 24th - Oct 30th 2023 (Last 7 days)"
+  },
+  {
+    "objectID": "detailed.html#top-targeted-detailed-audiences",
+    "href": "detailed.html#top-targeted-detailed-audiences",
+    "title": "Detailed Audiences",
+    "section": "",
+    "text": "Here, we show the top targeted audiences for each party for the “detailed” targeting that Meta offers (ranked by amount of Euro spend). Most (but not all) of these audiences are “interest” audiences, i.e. the parties targeted people interested in “Books” or “Politics”.\n\nOct 1st - Oct 30th 2023 (Last 30 days)Oct 24th - Oct 30th 2023 (Last 7 days)"
+  },
+  {
+    "objectID": "detailed.html#top-excluded-detailed-audiences",
+    "href": "detailed.html#top-excluded-detailed-audiences",
+    "title": "Detailed Audiences",
+    "section": "Top Excluded (Detailed) Audiences",
+    "text": "Top Excluded (Detailed) Audiences\nHere, we show the top excluded audiences for each party for the “detailed” targeting that Meta offers (ranked by amount of Euro spend). Most (but not all) of these audiences are “interest” audiences, i.e. the parties excluded people interested in “Books” or “Politics”.\n\nOct 1st - Oct 30th 2023 (Last 30 days)Oct 24th - Oct 30th 2023 (Last 7 days)\n\n\n\nNo data (yet).\n\n\n\n\nNo data (yet)."
+  },
+  {
+    "objectID": "detailed.html#top-contested-audiences",
+    "href": "detailed.html#top-contested-audiences",
+    "title": "Detailed Audiences",
+    "section": "Top Contested Audiences",
+    "text": "Top Contested Audiences\nHere, we show the top most contested audiences, i.e. where all parties have spent considerable amounts of money competing to reach voters with the same interests.\n\nOct 1st - Oct 30th 2023 (Last 30 days)Oct 24th - Oct 30th 2023 (Last 7 days)"
+  },
+  {
+    "objectID": "location.html",
+    "href": "location.html",
+    "title": "Location",
+    "section": "",
+    "text": "The graphs below show various kinds of location targeting that parties engaged in on Meta platforms.\n\nOct 1st - Oct 30th 2023 (Last 30 days)\n\n\n\nPostal CodesProvincesCities\n\n\nThe graphs below shows postal code targeting that parties engaged in on Meta platforms.\n\nVVDCDAGroenLinks-PvdA\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThe bigger the area the more money was spend by the party on targeting this location.\n\n\n\n\n\n\n\n\n\n\nThe bigger the area the more money was spend by the party on targeting this location."
+  },
+  {
+    "objectID": "location.html#geographical-targeting",
+    "href": "location.html#geographical-targeting",
+    "title": "Location",
+    "section": "",
+    "text": "The graphs below show various kinds of location targeting that parties engaged in on Meta platforms.\n\nOct 1st - Oct 30th 2023 (Last 30 days)\n\n\n\nPostal CodesProvincesCities\n\n\nThe graphs below shows postal code targeting that parties engaged in on Meta platforms.\n\nVVDCDAGroenLinks-PvdA\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThe bigger the area the more money was spend by the party on targeting this location.\n\n\n\n\n\n\n\n\n\n\nThe bigger the area the more money was spend by the party on targeting this location."
+  },
+  {
+    "objectID": "location.html#geographical-exclusion",
+    "href": "location.html#geographical-exclusion",
+    "title": "Location",
+    "section": "Geographical Exclusion",
+    "text": "Geographical Exclusion\nOn Meta, political parties can also exclude certain geographical units. The graphs below show which locations were excluded from seeing political advertisements and how much money the parties spend on these ads.\n\nOct 1st - Oct 30th 2023 (Last 30 days)\n\n\n\nPostal CodesProvincesCities\n\n\nThe graphs below shows postal code exclusion that parties engaged in on Meta platforms.\n\nCDA\n\n\n\n\n\n\n\n\n\n\n\n\n\nThe bigger the area the more money was spend on ads excluding this location.\n\n\n\nNo data (yet).\n\n\n\n\n\n\nThe bigger the area the more money was spend on ads excluding this location."
+>>>>>>> 4dc1bc3bb51b929681cd497dad13ff3875648f26
+  }
+]

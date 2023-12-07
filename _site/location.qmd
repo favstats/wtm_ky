@@ -1,0 +1,358 @@
+---
+title: "Location"
+description-meta: "How do political parties chase your vote, what do they want to keep hidden, and how much money do they spend on it? In the lead-up to the elections, we monitor political microtargeting."
+lang: nl
+format:
+  html:
+    toc: true
+    toc-location: right
+---
+
+
+```{r setup, include=FALSE}
+
+## Global options
+knitr::opts_chunk$set(
+  cache = F,
+  echo = F,
+  warning = F,
+  message = F,
+  cache.lazy = FALSE
+)
+
+
+
+# pacman::p_load(tidyverse, highcharter)
+library(tidyverse)
+library(highcharter)
+library(gt)
+
+pacman::p_load(knitr, tidyverse, rmarkdown, openxlsx, sf, shiny)
+
+source("../utils.R")
+source("../party_utils.R")
+
+```
+
+
+## Geographical Targeting
+
+The chart below displays the geographical targeting of that political parties on Meta platforms.
+
+::: {.panel-tabset}
+
+
+### `r last30days_string`
+
+
+::: {.panel-tabset}
+
+#### Regions
+
+> The size of each area in the chart indicates the amount of money spent by each political party on specific locations.
+
+```{r,fig.width=10, fig.height=8, echo = F}
+library(treemap)
+region_dat <- election_dat30 %>%
+  filter(type == "location") %>%
+  filter(location_type == "regions") %>%
+  filter(!is_exclusion)  %>%
+  mutate(likely_together = paste0(total_spend_pct,num_ads) %>% as.factor() %>% as.numeric()) %>%
+  group_by(internal_id) %>%
+  add_count(likely_together, name = "n_clusters") %>%
+  ungroup() %>%
+  mutate(total_spend_formatted = total_spend_formatted*total_spend_pct) %>%
+  mutate(total_spend_formatted = total_spend_formatted/n_clusters) %>%
+  group_by(party, value) %>%
+  summarise(total_spend_formatted = sum(total_spend_formatted),
+            num_ads = sum(num_ads)) %>%
+  ungroup() %>%
+  rename(region = value) %>%
+  mutate(region = str_remove_all(region, ", Belgium"))
+
+the_colors <- region_dat %>%
+  group_by(party) %>%
+  summarize(total_spend_formatted = sum(total_spend_formatted)) %>%
+  ungroup() %>%
+  mutate(party = fct_relevel(party)) %>%
+  left_join(color_dat) %>%
+  arrange(party) %>%
+  drop_na(colors) %>%
+  pull(colors)
+
+if(nrow(region_dat)!=0) {
+  # Static version
+  tm <- treemap(
+    region_dat,
+    index = c("party", "region"),
+    vSize = "total_spend_formatted",
+    vColor = "party",
+    type = "index",
+    title = "", draw = T,
+    align.labels = list(c("right", "bottom"),
+                        c("center", "center")),
+    fontsize.labels = c(21, 10),
+    # size of labels. Give the size per level of aggregation: size for group, size for subgroup, sub-subgroups...
+
+    fontcolor.labels = c("white", "white"),
+    # Color of labels
+    palette = the_colors
+  )
+
+
+} else {
+  shiny::HTML("No data (yet).")
+}
+#
+# library(d3treeR)
+#
+# # make it interactive ("rootname" becomes the title of the plot):
+# inter <- d3tree2( tm,  rootname = "Targeting " )
+# inter
+# # read_csv("../data/PoliticalAds.csv") %>%
+# #   filter(CountryCode == "turkey")
+# #   count(CountryCode, sort = T)
+#
+# # ggsave("img/tregion.pdf",width=10, height=8, dpi = 900)
+#
+# library(highcharter)
+#
+# library(highcharter)
+# library(dplyr)
+
+# Convert data to hierarchical structure
+# hierarchical_data <- data_to_hierarchical(region_dat, c("party", "region"), "total_spend_formatted", color = the_colors)
+#
+# # Create treemap
+# hchart(hierarchical_data, type = "treemap", allowDrillToNode = TRUE,
+#       color = the_colors) %>%
+#   hc_title(text = "") %>%
+#   # hc_colorAxis(minColor = "#FFFFFF", maxColor = highchart_palette()[[2]]) %>%
+#   hc_tooltip(
+#     pointFormat = '<b>{point.name}:</b> {point.value}<br/>',
+#     followPointer = TRUE
+#   ) %>%
+#   hc_plotOptions(
+#     treemap = list(
+#       layoutAlgorithm = 'squarified',
+#       dataLabels = list(
+#         enabled = TRUE,
+#         align = 'left',
+#         verticalAlign = 'top',
+#         style = list(fontSize = '15px')
+#       )
+#     )
+#   )
+
+```
+
+
+#### Cities
+
+> The size of each area in the chart indicates the amount of money spent by each political party on specific locations.
+
+```{r,fig.width=10, fig.height=8}
+library(treemap)
+region_dat <- election_dat30 %>%
+  filter(type == "location") %>%
+  filter(location_type == "CITY") %>%
+  filter(!is_exclusion)  %>%
+  mutate(likely_together = paste0(total_spend_pct,num_ads) %>% as.factor() %>% as.numeric()) %>%
+  group_by(internal_id) %>%
+  add_count(likely_together, name = "n_clusters") %>%
+  ungroup() %>%
+  mutate(total_spend_formatted = total_spend_formatted*total_spend_pct) %>%
+  mutate(total_spend_formatted = total_spend_formatted/n_clusters) %>%
+  group_by(party, value) %>%
+  summarise(total_spend_formatted = sum(total_spend_formatted),
+            num_ads = sum(num_ads)) %>%
+  ungroup() %>%
+  rename(region = value) %>%
+  mutate(region = str_remove_all(region, ", Belgium"))
+
+the_colors <- region_dat %>%
+  group_by(party) %>%
+  summarize(total_spend_formatted = sum(total_spend_formatted)) %>%
+  ungroup() %>%
+  mutate(party = fct_relevel(party)) %>%
+  left_join(color_dat) %>%
+  arrange(party) %>%
+  drop_na(colors) %>%
+  pull(colors)
+
+if(nrow(region_dat)!=0) {
+  ## Static version
+  tm <- treemap(
+    region_dat,
+    index = c("party", "region"),
+    vSize = "total_spend_formatted",
+    vColor = "party",
+    type = "index",
+    title = "",
+    align.labels = list(c("right", "bottom"),
+                        c("center", "center")),
+    fontsize.labels = c(21, 10),
+    # size of labels. Give the size per level of aggregation: size for group, size for subgroup, sub-subgroups...
+
+    fontcolor.labels = c("white", "white"),
+    # Color of labels
+    palette = the_colors
+  )
+} else {
+  shiny::HTML("No data (yet).")
+}
+
+
+
+```
+
+
+:::
+
+:::
+
+## Geographical Exclusion
+
+The following graphs depict the geographic locations that certain political advertisements will exclude on Meta, along with the amounts that parties spent on these exclusions.
+
+
+
+
+
+
+
+::: {.panel-tabset}
+
+
+### `r last30days_string`
+
+
+
+::: {.panel-tabset}
+
+#### Regions
+
+> The size of each area in the chart indicates the amount of money spent by each political party on specific locations.
+
+```{r,fig.width=10, fig.height=8, echo = F}
+library(treemap)
+region_dat <- election_dat30 %>%
+  filter(type == "location") %>%
+  filter(location_type == "regions") %>%
+  filter(is_exclusion)  %>%
+  mutate(likely_together = paste0(total_spend_pct,num_ads) %>% as.factor() %>% as.numeric()) %>%
+  group_by(internal_id) %>%
+  add_count(likely_together, name = "n_clusters") %>%
+  ungroup() %>%
+  mutate(total_spend_formatted = total_spend_formatted*total_spend_pct) %>%
+  mutate(total_spend_formatted = total_spend_formatted/n_clusters) %>%
+  group_by(party, value) %>%
+  summarise(total_spend_formatted = sum(total_spend_formatted),
+            num_ads = sum(num_ads)) %>%
+  ungroup() %>%
+  rename(region = value) %>%
+  mutate(region = str_remove_all(region, ", Belgium"))
+
+the_colors <- region_dat %>%
+  group_by(party) %>%
+  summarize(total_spend_formatted = sum(total_spend_formatted)) %>%
+  ungroup() %>%
+  mutate(party = fct_relevel(party)) %>%
+  left_join(color_dat) %>%
+  arrange(party) %>%
+  drop_na(colors) %>%
+  pull(colors)
+
+if(nrow(region_dat)!=0) {
+  # Static version
+  tm <- treemap(
+    region_dat,
+    index = c("party", "region"),
+    vSize = "total_spend_formatted",
+    vColor = "party",
+    type = "index",
+    title = "", draw = T,
+    align.labels = list(c("right", "bottom"),
+                        c("center", "center")),
+    fontsize.labels = c(21, 10),
+    # size of labels. Give the size per level of aggregation: size for group, size for subgroup, sub-subgroups...
+
+    fontcolor.labels = c("white", "white"),
+    # Color of labels
+    palette = the_colors
+  )
+
+
+} else {
+  shiny::HTML("No data (yet).")
+}
+#
+
+```
+
+
+#### Cities
+
+> The size of each area in the chart indicates the amount of money spent by each political party on specific locations.
+
+```{r,fig.width=10, fig.height=8}
+library(treemap)
+region_dat <- election_dat30 %>%
+  filter(type == "location") %>%
+  filter(location_type == "CITY") %>%
+  filter(is_exclusion)  %>%
+  mutate(likely_together = paste0(total_spend_pct,num_ads) %>% as.factor() %>% as.numeric()) %>%
+  group_by(internal_id) %>%
+  add_count(likely_together, name = "n_clusters") %>%
+  ungroup() %>%
+  mutate(total_spend_formatted = total_spend_formatted*total_spend_pct) %>%
+  mutate(total_spend_formatted = total_spend_formatted/n_clusters) %>%
+  group_by(party, value) %>%
+  summarise(total_spend_formatted = sum(total_spend_formatted),
+            num_ads = sum(num_ads)) %>%
+  ungroup() %>%
+  rename(region = value) %>%
+  mutate(region = str_remove_all(region, ", Belgium"))
+
+the_colors <- region_dat %>%
+  group_by(party) %>%
+  summarize(total_spend_formatted = sum(total_spend_formatted)) %>%
+  ungroup() %>%
+  mutate(party = fct_relevel(party)) %>%
+  left_join(color_dat) %>%
+  arrange(party) %>%
+  drop_na(colors) %>%
+  pull(colors)
+
+if(nrow(region_dat)!=0) {
+  ## Static version
+  tm <- treemap(
+    region_dat,
+    index = c("party", "region"),
+    vSize = "total_spend_formatted",
+    vColor = "party",
+    type = "index",
+    title = "",
+    align.labels = list(c("right", "bottom"),
+                        c("center", "center")),
+    fontsize.labels = c(21, 10),
+    # size of labels. Give the size per level of aggregation: size for group, size for subgroup, sub-subgroups...
+
+    fontcolor.labels = c("white", "white"),
+    # Color of labels
+    palette = the_colors
+  )
+} else {
+  shiny::HTML("No data (yet).")
+}
+
+
+
+```
+
+
+:::
+
+:::
+
+

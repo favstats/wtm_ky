@@ -1,0 +1,31 @@
+---
+title: "Overview of Targeting and Exclusion Criteria"
+output:
+  prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+---
+
+
+## Detailed Data
+
+Explore the data yourself:
+
+
+```{r, fig.width= 11, fig.height=8, dpi = 300, echo = F, warning=F, message=F}
+library(tidyverse)
+source("../party_utils.R")
+election_dat30 %>%
+
+  mutate(spend_perc = round(total_spend_pct*100,2)) %>%
+  # count(type)
+  filter(type != "location") %>% 
+  filter(type != "age") %>% 
+  filter(value != "All") %>% 
+  filter(num_ads != "0") %>% 
+
+  select(page_id = internal_id, page_name, party, type, targeting = value, is_exclusion, num_ads, spend_total = total_spend_formatted, spend_perc, location_type, detailed_type, custom_audience_type) %>%
+
+  DT::datatable(extensions = 'Responsive')
+
+```

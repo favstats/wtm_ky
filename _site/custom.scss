@@ -1,0 +1,64 @@
+/*-- scss:defaults --*/
+$body-color: #000;
+$navbar-bg: #fff;
+$navbar-hl: #ed1c24;
+$link-color: #ed1c24;
+$link-hover-color: #000;
+$nav-tabs-link-active-color: #000;
+
+/*-- scss:rules --*/
+table {
+  font-family: acumin-pro-semi-condensed, helvetica, arial, sans-serif !important;
+}
+
+.navbar {
+  border-bottom: 1px solid #ccc;
+}
+
+.navbar-logo {
+  max-height: 50px;
+  height: 50px;
+  border-radius: 100%;
+}
+
+h1, h2, h3 {
+  font-family: "Miller Text", georgia, serif;
+}
+
+h1 {
+  font-size: 1.8rem;
+}
+
+h2 {
+  font-size: 1.4rem;
+}
+
+div.sidebar-item-container .active {
+  color: #ed1c24;
+}
+
+div.sidebar-item-container .sidebar-link:hover {
+  color: #ed1c24;
+}
+
+.panel-tabset .nav-link {
+  font-size: 0.9rem;
+}
+
+.gt_table a {
+  color: $link-hover-color;
+  text-decoration: none;
+  display: inline-block;
+  transition: 0.3s;
+}
+
+.gt_table a:hover {
+  text-decoration: underline;
+}
+
+.quarto-title-block div.description {
+  max-width: 72ch;
+  margin-bottom: 40px;
+  font-size: 21px;
+  font-weight: 500;
+}

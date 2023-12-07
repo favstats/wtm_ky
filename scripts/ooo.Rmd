@@ -1,0 +1,921 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-10-28"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r, fig.width=5, fig.height=2, dpi = 900}
+library(tidyverse)
+
+election_dat30 <- readRDS("data/election_dat30.rds")
+
+cbs<- openxlsx::read.xlsx("data/cbs_pc4_2020_v2.xlsx")
+
+all_zip <- election_dat30 %>% 
+    filter(type == "location") %>% 
+    filter(location_type == "zips") %>% 
+    mutate(total_spend_formatted = total_spend_pct*total_spend_formatted) %>% 
+    filter(!is_exclusion) %>% 
+    group_by(value, party) %>% 
+    summarize(total_spend = sum(total_spend_formatted)) %>% 
+    ungroup() %>% 
+    # filter(party == "VVD")  %>% 
+    dplyr::mutate(pc4 = str_remove_all(value, ", Netherlands") %>% as.numeric) %>% 
+    left_join(cbs %>% 
+    janitor::clean_names() #%>% 
+    # count(p_nw_mig_a) %>%
+    # filter(p_nw_mig_a >= 0)
+    )
+
+
+all_zip <- election_dat30 %>% 
+    filter(type == "location") %>% 
+    filter(location_type == "zips") %>% 
+    mutate(total_spend_formatted = total_spend_pct*total_spend_formatted) %>% 
+    filter(!is_exclusion) %>% 
+  group_by(page_id, total_spend_pct, party) %>%
+  mutate(n_together = n()) %>%
+    # select(page_id, value, num_ads, total_spend_formatted, n_together) 
+  mutate(total_spend_formatted_old = total_spend_formatted) %>% 
+  mutate(total_spend_formatted = total_spend_formatted/n_together) %>% 
+  select(party, page_id, value, n_together, total_spend_formatted, total_spend_formatted_old) %>% 
+  ungroup() %>% 
+  arrange(value) %>%
+    group_by(value, party) %>% 
+    summarize(total_spend = sum(total_spend_formatted),
+              total_spend_old = sum(total_spend_formatted_old)) %>% 
+    ungroup() %>% 
+    # filter(party == "VVD")  %>% 
+    dplyr::mutate(pc4 = str_remove_all(value, ", Netherlands") %>% as.numeric) %>% 
+    left_join(cbs %>% 
+    janitor::clean_names())
+
+# source("../party_utils.R")
+color_dat <- tibble(
+  colors = c("#00b13d", "#80c31c", "#0a2cca", "#008067", "#bf0000", "#ff0000", "#6f2421", "#02a6e9", "#92107d", "#04d3d4", "#242b57", "#66cdaa", "#242b57", "#006b28", "#012758", "#ea5b0b", "#582c83", "#698c0c", "#fdfd00", "#8da6d6", "#dc1f26"),
+  party = c("D66", "GroenLinks", "VVD", "CDA", "SP", "PvdA", "FvD", "ChristenUnie", "50PLUS", "Alliantie", "BVNL", "DENK", "Ja21", "PvdD", "PVV", "SGP", "Volt Nederland", "BBB", "BIJ1", "NSC", "GroenLinks-PvdA"))
+
+
+
+scale_fill_parties <- function(...){
+    ggplot2:::manual_scale(
+        'fill', 
+        values = setNames(color_dat$colors, color_dat$party), 
+        ...
+    )
+}
+scale_color_parties <- function(...){
+    ggplot2:::manual_scale(
+        'color', 
+        values = setNames(color_dat$colors, color_dat$party), 
+        ...
+    )
+}
+
+
+# all_zip <- election_dat30 %>% 
+#   # mutate(internal_id = internal_id) %>% 
+#     filter(type == "location") %>% 
+#     filter(location_type == "zips") %>% 
+#     mutate(total_spend_formatted = total_spend_pct*total_spend_formatted) %>% 
+#     filter(!is_exclusion) %>%
+#   # filter(!is_exclusion)  %>%
+#   mutate(likely_together = paste0(total_spend_pct,num_ads) %>% as.factor() %>% as.numeric()) %>%
+#   group_by(internal_id) %>%
+#   add_count(likely_together, name = "n_clusters") %>%
+#   ungroup() %>%
+#   mutate(total_spend_formatted_old = total_spend_formatted) %>%
+#   mutate(total_spend_formatted = total_spend_formatted/n_clusters) %>% 
+#   select(party, internal_id, value, total_spend_formatted, total_spend_formatted_old) %>% 
+#   ungroup() %>% 
+#   arrange(value) %>%
+#     group_by(value, party) %>% 
+#     summarize(total_spend = sum(total_spend_formatted),
+#               total_spend_old = sum(total_spend_formatted_old)) %>% 
+#     ungroup() %>% 
+#     # filter(party == "VVD")  %>% 
+#     dplyr::mutate(pc4 = str_remove_all(value, ", Netherlands") %>% as.numeric) %>% 
+#     left_join(cbs %>% 
+#     janitor::clean_names())
+
+
+
+) 
+
+all_zip %>% 
+  filter(party == "VVD") %>%
+  arrange(total_spend)
+  count(value, sort =  T)
+```
+
+```{r, fig.width=8, fig.height=6, dpi = 900, eval = F}
+all_zip  %>%
+    group_by(party) %>% 
+    # mutate(total_spend = scale(total_spend)) %>% 
+    filter(p_nw_mig_a >= 0) %>% 
+    # filter(!(party %in% c("BVNL", "D66", "PvdD"))) %>% 
+        filter(party %in% c("CDA", "VVD")) %>% 
+
+    ggplot(aes(total_spend, p_nw_mig_a)) +
+    geom_jitter(aes(color = party))  +
+    geom_smooth(method = "lm", color = "black") +
+    facet_wrap(~party, scales = "free") +
+    scale_color_parties() +
+    ggpubr::stat_cor(label.x.npc = "center") +
+    ggthemes::theme_hc() +
+    labs(x = "Ad Budget Spend on Postal Codes",
+         y = "% Non-Western migration background") +
+    theme(legend.position = "none") +
+    labs(caption = "Data: Meta Ad Library; CBS. Data Viz: @favstats")
+```
+
+
+```{r, fig.width=5, fig.height=4, dpi = 900, eval = F}
+gg1 <- all_zip  %>%
+    group_by(party) %>% 
+    # mutate(total_spend = scale(total_spend)) %>% 
+    filter(p_nw_mig_a >= 0) %>% 
+    # filter(!(party %in% c("BVNL", "D66", "PvdD"))) %>% 
+        filter(party %in% c( "VVD")) %>% 
+
+    ggplot(aes(total_spend, p_nw_mig_a)) +
+    geom_jitter(aes(color = party))  +
+    geom_smooth(method = "lm", color = "black") +
+    facet_wrap(~party, scales = "free") +
+    scale_color_parties() +
+    ggpubr::stat_cor(label.x.npc = "center") +
+    ggthemes::theme_hc() +
+    labs(x = "Ad Budget Spend on Postal Codes",
+         y = "% Non-Western migration background") +
+    theme(legend.position = "none") +
+    labs(caption = "Data: Meta Ad Library; CBS. Data Viz: @favstats") +
+  ylim(0,80)
+```
+
+```{r, fig.width=5, fig.height=2, dpi = 900, eval = F}
+
+all_zip  %>%
+    group_by(party) %>% 
+    # mutate(total_spend = scale(total_spend)) %>% 
+    filter(inw_65pl >= 0) %>% 
+    filter(inw_4564 >= 0) %>% 
+    mutate(inw_65pl = (inw_4564+inw_65pl)/inwoner*100) %>% 
+    # filter(!(party %in% c("BVNL", "D66", "PvdD"))) %>% 
+    filter(party %in% c("CDA", "VVD")) %>% 
+
+    ggplot(aes(total_spend, inw_65pl)) +
+    geom_jitter(aes(color = party))  +
+    geom_smooth(method = "lm", color = "black") +
+    facet_wrap(~party, scales = "free") +
+    scale_color_parties() +
+    ggpubr::stat_cor(label.x.npc = "center") +
+    ggthemes::theme_hc() +
+    labs(x = "Ad Budget Spend on Postal Codes",
+         y = "% of population 45 and older") +
+    theme(legend.position = "none") +
+    labs(caption = "Data: Meta Ad Library; CBS. Data Viz: @favstats")
+```
+
+
+
+```{r, fig.width=7, fig.height=3, dpi = 900, eval = F}
+
+gg2 <- all_zip  %>%
+    group_by(party) %>% 
+    # mutate(total_spend = scale(total_spend)) %>% 
+    filter(uitkminaow >= 0) %>% 
+    mutate(inw_65pl = (uitkminaow/inwoner*100)) %>% 
+    # filter(!(party %in% c("BVNL", "D66", "PvdD"))) %>% 
+    filter(party %in% c("VVD")) %>% 
+
+    ggplot(aes(total_spend, inw_65pl)) +
+    geom_jitter(aes(color = party))  +
+    geom_smooth(method = "lm", color = "black") +
+    facet_wrap(~party, scales = "free") +
+    scale_color_parties() +
+    ggpubr::stat_cor(label.x.npc = "center") +
+    ggthemes::theme_hc() +
+    labs(x = "Ad Budget Spend on Postal Codes",
+         y = "% of population receiving social benefits") +
+    theme(legend.position = "none") +
+    labs(caption = "Data: Meta Ad Library; CBS. Data Viz: @favstats") +
+  ylim(0, 80)
+
+
+library(patchwork)
+
+gg1+gg2
+```
+
+```{r, eval = F}
+all_zip  %>%
+    group_by(party) %>% 
+    # mutate(total_spend = scale(total_spend)) %>% 
+    filter(uitkminaow >= 0) %>% 
+    # filter(!(party %in% c("BVNL", "D66", "PvdD"))) %>% 
+        filter(party %in% c("CDA", "VVD")) %>% 
+
+    ggplot(aes(total_spend, uitkminaow)) +
+    geom_jitter(aes(color = party))  +
+    geom_smooth(method = "lm", color = "black") +
+    facet_wrap(~party, scales = "free") +
+    scale_color_parties() +
+    ggpubr::stat_cor(label.x.npc = "left") +
+    ggthemes::theme_hc() +
+    labs(x = "Ad Budget Spend on Postal Codes",
+         y = "% Non-Western migration background") +
+    theme(legend.position = "none")
+```
+
+
+
+```{r, message=F, warning=F, cache=F}
+# libary()
+geo <- sf::st_read("data/ignore/georef-netherlands-postcode-pc4.geojson", quiet = T)
+```
+
+
+```{r, message=F, warning=F, cache=F}
+# Assume data is your data frame
+data <- data.frame(
+  postcode = c("1011", "1012", "1013"),
+  value = c(10, 20, 30)
+)
+
+geo$data <- data$value[match(geo$pc4_code, data$postcode)]
+# geo$
+geo %>% left_join()
+
+library(highcharter)
+
+hc_add_series_map()
+
+# highchart() %>%
+  # hc_add_series_map(geo) %>%
+  hcmap(
+    "countries/nl/nl-all",
+    data = vvd_dat,
+    value = "won_nbew",
+    # joinBy = "postcode",
+    name = "Value",
+    borderColor = "#FFFFFF",
+    borderWidth = 0.5,
+    tooltip = list(valueSuffix = " units")
+  ) %>%
+  hc_colorAxis(
+    stops = color_stops(10)
+  )
+
+
+hcmap("countries/nl/nl-all-all")
+
+
+require(dplyr)
+
+mapdata <- get_data_from_map(download_map_data("countries/nl/nl-nh-all")) %>% 
+  mutate(code = str_extract(`hc-key`, "(?<=gm)\\d{4}") %>% str_squish)
+
+glimpse(mapdata)
+
+mapdata %>% 
+  filter(name =="Amsterdam")
+
+data_fake <- all_zip %>% 
+    filter(party == "VVD") %>% 
+    dplyr::mutate(code = str_remove_all(value, ", Netherlands") %>% str_squish) %>% 
+    left_join(mapdata %>% select(code, `hc-key`))
+
+
+
+glimpse(data_fake)
+
+hcmap(
+  
+  # map = mapdata,
+  "countries/nl/nl-all-all",
+  data = data_fake,
+  value = "total_spend",
+  joinBy = c("hc-key", "code"),
+  name = "Fake data",
+  dataLabels = list(enabled = TRUE, format = "{point.name}"),
+  borderColor = "#FAFAFA",
+  borderWidth = 0.1#,
+  # tooltip = list(
+  #   valueDecimals = 2,
+  #   valuePrefix = "$",
+  #   valueSuffix = "USD"
+  # )
+)
+
+md_map_json <- jsonlite::fromJSON("data/ignore/georef-netherlands-postcode-pc4.geojson",simplifyVector = FALSE)
+
+  # md_map_json <- jsonlite::fromJSON(txt = "FILEPATH/md_carto_tracts.json",simplifyVector = FALSE)
+
+  
+highchart() %>%
+ hc_add_series_map(md_map_json, data_fake, value = "total_spend", joinBy = c("hc-key", "code"))
+```
+
+```{r}
+mapdata %>% filter(code == "1034")
+```
+
+
+```{r}
+data <- tibble(
+  country = 
+    c("PT", "IE", "GB", "IS",
+      
+      "NO", "SE", "DK", "DE", "NL", "BE", "LU", "ES", "FR", "PL", "CZ", "AT",
+      "CH", "LI", "SK", "HU", "SI", "IT", "SM", "HR", "BA", "YF", "ME", "AL", "MK",
+      
+      "FI", "EE", "LV", "LT", "BY", "UA", "MD", "RO", "BG", "GR", "TR", "CY",
+      
+      "RU"),  
+  tz = c(rep("UTC", 4), rep("UTC + 1",25), rep("UCT + 2",12), "UTC + 3")
+  )
+
+# auxiliar variable
+data <- data |> 
+  mutate(value = cumsum(!duplicated(tz)))
+
+
+# now we'll create the dataClasses
+dta_clss <- data |> 
+  mutate(value = cumsum(!duplicated(tz))) |> 
+  group_by(tz) |> 
+  summarise(value = unique(value)) |> 
+  arrange(value) |> 
+  rename(name = tz, from = value) |> 
+  mutate(to = from + 1) |> 
+  list_parse()
+
+hcmap(
+  map = "custom/europe",
+  data = data, 
+  joinBy = c("iso-a2","country"),
+  name = "Time zone",
+  value = "value",
+  tooltip = list(pointFormat = "{point.name} {point.tz}"),
+  dataLabels = list(enabled = TRUE, format = "{point.country}")
+  ) |>
+  hc_colorAxis(
+    dataClassColor = "category",
+    dataClasses = dta_clss
+    ) |> 
+  hc_title(text = "Europe Time Zones")
+```
+
+```{r}
+highchart() %>%
+  hc_add_series_map(
+    map = geo,
+    value = "value",
+    joinBy = c("iso-a2","country"),
+    name = "Value",
+    borderColor = "#FFFFFF",
+    borderWidth = 0.5,
+    tooltip = list(valueSuffix = " units")
+  ) %>%
+  hc_colorAxis(
+    stops = color_stops(10)
+  )
+
+```
+
+
+```{r, message=F, warning=F, cache=F, fig.width=15, fig.height=15, dpi = 900}
+vvd_dat <- geo %>% 
+    left_join(all_zip %>% 
+    filter(party == "VVD") %>% 
+    dplyr::mutate(pc4_code = str_remove_all(value, ", Netherlands")))#%>%
+    # mutate(inwoner = ifelse(inwoner < 0, NA, inwoner)) %>% 
+    # mutate(total_spend = log(total_spend/inwoner)
+
+cda_dat <- geo %>% 
+    left_join(all_zip %>% 
+    filter(party == "CDA") %>% 
+    dplyr::mutate(pc4_code = str_remove_all(value, ", Netherlands")))
+
+gl_dat <- geo %>% 
+    left_join(all_zip %>% 
+    filter(party == "GroenLinks-PvdA") %>% 
+    dplyr::mutate(pc4_code = str_remove_all(value, ", Netherlands")))
+
+# saveRDS(vvd_dat, file = "data/vvd_dat.rds")
+
+# all_zip %>% 
+#     filter(party == "VVD") %>% 
+#     dplyr::mutate(pc4_code = str_remove_all(value, ", Netherlands")) %>%
+#     mutate(inwoner = ifelse(inwoner < 0, NA, inwoner)) %>% 
+#     mutate(total_spend = log(total_spend/inwoner) %>% 
+#     arrange(desc(total_spend))
+
+
+
+
+MOST_SPENT <- vvd_dat %>% 
+  select(pc4_code, party, total_spend_old) %>% 
+  bind_rows(cda_dat %>% select(pc4_code, party, total_spend_old, gem_name)) %>% 
+  bind_rows(gl_dat %>% select(pc4_code, party, total_spend_old, gem_name)) %>% 
+  group_by(pc4_code) %>% 
+  arrange(desc(total_spend_old)) %>% 
+  slice(1) %>% 
+  ungroup 
+
+
+wcities <- read_csv("data/worldcities.csv") %>% 
+  filter(country == "Netherlands")
+
+bigcities <-wcities %>% #count(capital)
+  mutate(capital = str_trim(capital)) %>% 
+  filter(population >= 220000)
+
+withgeo <- bigcities %>% 
+  rename(gem_name = city) %>% 
+  left_join(MOST_SPENT) %>% 
+  distinct(gem_name, .keep_all = T)
+
+MOST_SPENT %>%
+  ggplot()  +
+  theme_void() +
+  # geom_sf(color = "black") +
+  # geom_sf(aes(fill = log(total_spend)+2),
+  #         colour = "white", size = 0.9) +
+  geom_sf(aes(fill = party, alpha = total_spend_old),
+          colour = NA,
+          size = 0.00000001) +
+  # geom_sf(colour = "white", fill = NA, alpha = 0.001,
+  #         size = 0.00000001) +
+  # geom_sf(data = prov, color = "black", fill = NA)  +
+  # geom_sf_label(data = prov, aes(label = name)) +
+  theme(legend.position = "bottom") +
+  # guides(fill = guide_colourbar(title = "Spend (€)", barwidth = 10, barheight = 0.5)) +
+  scale_fill_parties() +
+  scale_alpha(range = c(0.5, 1)) +
+  geom_point(
+    data = withgeo ,
+    aes(geometry = geometry),
+    color = "black",
+    stat = "sf_coordinates", size = 3
+  )  +
+  ggrepel::geom_text_repel(
+    max.overlaps = 1,
+    label.size = NA,
+    data = withgeo ,
+    aes(geometry = geometry, label = gem_name),
+    color = "black",
+    stat = "sf_coordinates",
+    size = 9,  face = "bold", seed = 2323
+  )  #+
+  # ggrepel::geom_text_repel(
+  #   max.overlaps = 1,
+  #   label.size = NA,
+  #   data = withgeo ,
+  #   aes(geometry = geometry, label = gem_name),
+  #   color = "white",
+  #   stat = "sf_coordinates",
+  #   size = 8, seed = 2323
+  # ) 
+# theme(plot.background = element_rect(fill = "darkgrey"))
+
+
+```
+
+
+```{r,eval =T, cache=F}
+
+party_zip <- election_dat30 %>% 
+    filter(type == "location") %>% 
+    filter(location_type == "zips") %>% 
+    mutate(total_spend_formatted = total_spend_pct*total_spend_formatted) %>% 
+    filter(!is_exclusion) %>% 
+    group_by(value, party) %>% 
+    summarize(total_spend = sum(total_spend_formatted)) %>% 
+    ungroup() %>% 
+    filter(party == "CDA")  %>% 
+    dplyr::mutate(pc4_code = str_remove_all(value, ", Netherlands"))
+
+cda_dat <- geo %>% 
+    left_join(party_zip)
+
+# saveRDS(cda_dat, file = "data/cda_dat.rds")
+```
+
+
+```{r,eval =T, cache=F}
+
+party_zip <- election_dat30 %>% 
+    filter(type == "location") %>% 
+    filter(location_type == "zips") %>% 
+    mutate(total_spend_formatted = total_spend_pct*total_spend_formatted) %>% 
+    filter(!is_exclusion) %>% 
+    group_by(value, party) %>% 
+    summarize(total_spend = sum(total_spend_formatted)) %>% 
+    ungroup() %>% 
+    filter(party == "ChristenUnie")  %>% 
+    dplyr::mutate(pc4_code = str_remove_all(value, ", Netherlands"))
+
+cu_dat <- geo %>% 
+    left_join(party_zip)
+
+# saveRDS(cu_dat, file = "data/cu_dat.rds")
+```
+
+
+```{r,eval =T, cache=F}
+
+party_zip <- election_dat30 %>% 
+    filter(type == "location") %>% 
+    filter(location_type == "zips") %>% 
+    mutate(total_spend_formatted = total_spend_pct*total_spend_formatted) %>% 
+    filter(!is_exclusion) %>% 
+    group_by(value, party) %>% 
+    summarize(total_spend = sum(total_spend_formatted)) %>% 
+    ungroup() %>% 
+    filter(party == "GroenLinks")  %>% 
+    dplyr::mutate(pc4_code = str_remove_all(value, ", Netherlands"))
+
+gl_dat <- geo %>% 
+    left_join(party_zip)
+
+# saveRDS(gl_dat, file = "data/gl_dat.rds")
+```
+
+
+```{r,eval =T, cache=F}
+
+party_zip <- election_dat30 %>% 
+    filter(type == "location") %>% 
+    filter(location_type == "zips") %>% 
+    mutate(total_spend_formatted = total_spend_pct*total_spend_formatted) %>% 
+    filter(!is_exclusion) %>% 
+    group_by(value, party) %>% 
+    summarize(total_spend = sum(total_spend_formatted)) %>% 
+    ungroup() %>% 
+    filter(party == "BVNL")  %>% 
+    dplyr::mutate(pc4_code = str_remove_all(value, ", Netherlands"))
+
+bvnl_dat <- geo %>% 
+    left_join(party_zip)
+
+# saveRDS(bvnl_dat, file = "data/bvnl_dat.rds")
+```
+
+```{r}
+# election_dat30 %>% 
+#     # filter(type == "location") %>% 
+#     # filter(location_type == "zips") %>% 
+#     mutate(total_spend_formatted = total_spend_pct*total_spend_formatted) %>% 
+#     filter(is_exclusion) %>% 
+#     arrange(desc(total_spend_formatted))
+```
+
+
+```{r, eval=F}
+party_zip# %>% 
+    # count(value, sort = T)
+
+# Now I can plot this shape easily as described before:
+library(ggplot2)
+ggplot() +
+  geom_polygon(data = gjsf, aes( x = long, y = lat, group = group), fill="white", color="grey") +
+  theme_void() +
+  coord_map()
+
+ggplot(geo) +
+  geom_sf(colour = "white")
+
+geo %>% 
+    left_join(party_zip) %>% 
+    ggplot()  +
+    theme_void() +
+    scale_fill_gradient2(low = "lightgrey", high = color_dat %>% filter(party=="VVD") %>% .$colors,
+            na.value = "lightgrey")   +
+    geom_sf(aes(fill = total_spend),
+            colour = NA, size = 0.1)+
+    geom_sf(data = prov, color = "black", fill = NA)  +
+  geom_sf_label(data = prov, aes(label = name))
+```
+
+
+### `r last30days_string` (Last 30 days) {.tabset .tabset-fade .tabset-pills}
+
+
+#### VVD
+
+```{r, fig.width=9, fig.height=5, dpi = 300}
+
+vvd_dat %>% 
+  arrange(desc(total_spend)) %>% 
+    ggplot()  +
+    theme_void() +
+    scale_fill_gradient2(low = "lightgrey", high = color_dat %>% filter(party=="VVD") %>% .$colors,
+            na.value = "lightgrey")   +
+      # geom_sf(color = "black") +
+    # geom_sf(aes(fill = log(total_spend)+2),
+    #         colour = "white", size = 0.9) +
+    geom_sf(aes(fill = total_spend_old),
+            colour = NA, size = 0.1) +
+    # geom_sf(data = prov, color = "black", fill = NA)  +
+  # geom_sf_label(data = prov, aes(label = name)) +
+    theme(legend.position = "bottom") + 
+    guides(fill = guide_colourbar(title = "Spend (€)", barwidth = 10, barheight = 0.5))
+
+vvd_dat %>% 
+  arrange(desc(total_spend)) %>% 
+    ggplot()  +
+    theme_void() +
+    scale_fill_gradient2(low = "lightgrey", high = color_dat %>% filter(party=="VVD") %>% .$colors,
+            na.value = "lightgrey",
+             # breaks = log(c(1, 20, 50, 100)+1),
+        labels = function(x) format(round(exp(x+1)), big.mark = ","))   +
+      # geom_sf(color = "black") +
+    # geom_sf(aes(fill = log(total_spend)+2),
+    #         colour = "white", size = 0.9) +
+    geom_sf(aes(fill = log(total_spend_old+1)),
+            colour = NA, size = 0.1) +
+    # geom_sf(data = prov, color = "black", fill = NA)  +
+  # geom_sf_label(data = prov, aes(label = name)) +
+    theme(legend.position = "bottom") + 
+    guides(fill = guide_colourbar(title = "Spend (€)", barwidth = 10, barheight = 0.5))
+```
+
+#### CDA
+
+
+
+```{r, fig.width=15, fig.height=15, dpi = 300}
+
+wcities <- read_csv("data/worldcities.csv") %>% 
+  filter(country == "Netherlands")
+
+bigcities <-wcities %>% #count(capital)
+  mutate(capital = str_trim(capital)) %>% 
+  filter(population >= 50000)
+
+withgeo <- bigcities %>% 
+  rename(gem_name = city) %>% 
+  left_join(cda_dat) %>% 
+  distinct(gem_name, .keep_all = T)
+
+cda_dat  %>% 
+    filter(prov_name == "Groningen") %>%
+    ggplot()  +
+    theme_void() +
+    scale_fill_gradient2(low = "lightgrey", high = color_dat %>% filter(party=="CDA") %>% .$colors,
+            na.value = "lightgrey")   +
+    geom_sf(aes(fill = total_spend_old  ),
+            colour = NA, size = 0.1)+
+  geom_label(
+    data = withgeo %>% filter(prov_name == "Groningen"),
+    aes(geometry = geometry, label = gem_name),
+    stat = "sf_coordinates"
+  ) +
+  # geom_sf_label(data = bigcities, aes(lat, lng, label = city)) +
+    # geom_sf_label(data = bigcities, label )
+  #   geom_sf(data = prov, color = "black", fill = NA)  +
+  # geom_sf_label(data = prov, aes(label = name))+
+    theme(legend.position = "bottom")+ 
+    guides(fill = guide_colourbar(title = "Spend (€)", barwidth = 10, barheight = 0.5))
+```
+
+```{r, fig.width=15, fig.height=15, dpi = 300}
+gl_dat  %>% 
+    filter(prov_name == "Noord-Holland") %>%
+    ggplot()  +
+    theme_void() +
+    scale_fill_gradient2(low = "lightgrey", high = color_dat %>% filter(party=="GroenLinks-PvdA") %>% .$colors,
+            na.value = "lightgrey")   +
+    geom_sf(aes(fill = total_spend_old  ),
+            colour = NA, size = 0.1)+
+  geom_label(
+    data = withgeo %>% filter(prov_name == "Noord-Holland"),
+    aes(geometry = geometry, label = gem_name),
+    stat = "sf_coordinates"
+  ) +
+  # geom_sf_label(data = bigcities, aes(lat, lng, label = city)) +
+    # geom_sf_label(data = bigcities, label )
+  #   geom_sf(data = prov, color = "black", fill = NA)  +
+  # geom_sf_label(data = prov, aes(label = name))+
+    theme(legend.position = "bottom")+ 
+    guides(fill = guide_colourbar(title = "Spend (€)", barwidth = 10, barheight = 0.5))
+
+vvd_dat  %>% 
+    filter(prov_name == "Noord-Holland") %>%
+    ggplot()  +
+    theme_void() +
+    scale_fill_gradient2(low = "lightgrey", high = color_dat %>% filter(party=="VVD") %>% .$colors,
+            na.value = "lightgrey")   +
+    geom_sf(aes(fill = total_spend_old  ),
+            colour = NA, size = 0.1)+
+  geom_label(
+    data = withgeo %>% filter(prov_name == "Noord-Holland"),
+    aes(geometry = geometry, label = gem_name),
+    stat = "sf_coordinates"
+  ) +
+  # geom_sf_label(data = bigcities, aes(lat, lng, label = city)) +
+    # geom_sf_label(data = bigcities, label )
+  #   geom_sf(data = prov, color = "black", fill = NA)  +
+  # geom_sf_label(data = prov, aes(label = name))+
+    theme(legend.position = "bottom")+ 
+    guides(fill = guide_colourbar(title = "Spend (€)", barwidth = 10, barheight = 0.5))
+```
+
+```{r, fig.width=15, fig.height=15, dpi = 300}
+withgeo2 <- bigcities %>% 
+  rename(gem_name = city) %>% 
+  left_join(MOST_SPENT) %>% 
+  distinct(pc4_code, .keep_all = T)
+
+vvd_dat  %>% 
+    filter(gem_name == "Utrecht") %>%
+    ggplot()  +
+    theme_void() +
+    scale_fill_gradient2(low = "lightgrey", high = color_dat %>% filter(party=="VVD") %>% .$colors,
+            na.value = "lightgrey")   +
+    geom_sf(aes(fill = total_spend_old  ),
+            colour = "black", size = 0.1)+
+  ggrepel::geom_text_repel(max.overlaps = T,
+    data = withgeo2 %>% filter(gem_name == "Utrecht"),
+    aes(geometry = geometry, label = pc4_code),
+    stat = "sf_coordinates", color = "white"
+  ) +
+  # geom_label(
+  #   data = withgeo %>% filter(gem_name == "Amsterdam"),
+  #   aes(geometry = geometry, label = gem_name),
+  #   stat = "sf_coordinates"
+  # ) +
+  # geom_sf_label(data = bigcities, aes(lat, lng, label = city)) +
+    # geom_sf_label(data = bigcities, label )
+  #   geom_sf(data = prov, color = "black", fill = NA)  +
+  # geom_sf_label(data = prov, aes(label = name))+
+    theme(legend.position = "bottom")+ 
+    guides(fill = guide_colourbar(title = "Spend (€)", barwidth = 10, barheight = 0.5))
+
+# vvd_dat %>% filter(str_detect(gem_name, "Rotterdam"))
+```
+
+
+```{r}
+vvd_dat  %>% 
+    filter(gem_name == "Amsterdam") %>%
+  arrange(desc(total_spend_old))
+    ggplot()  +
+    theme_void() +
+    scale_fill_gradient2(low = "lightgrey", high = color_dat %>% filter(party=="VVD") %>% .$colors,
+            na.value = "lightgrey")   +
+    geom_sf(aes(fill = total_spend_old  ),
+            colour = NA, size = 0.1)+
+  # geom_label(
+  #   data = withgeo %>% filter(prov_name == "Noord-Holland"),
+  #   aes(geometry = geometry, label = gem_name),
+  #   stat = "sf_coordinates"
+  # ) +
+  # geom_sf_label(data = bigcities, aes(lat, lng, label = city)) +
+    # geom_sf_label(data = bigcities, label )
+  #   geom_sf(data = prov, color = "black", fill = NA)  +
+  # geom_sf_label(data = prov, aes(label = name))+
+    theme(legend.position = "bottom")+ 
+    guides(fill = guide_colourbar(title = "Spend (€)", barwidth = 10, barheight = 0.5))
+```
+
+
+
+#### GroenLinks
+
+
+
+```{r, fig.width=9, fig.height=5, dpi = 300}
+
+gl_dat  %>% 
+    ggplot()  +
+    theme_void() +
+    scale_fill_gradient2(low = "lightgrey", high = color_dat %>% filter(party=="GroenLinks") %>% .$colors,
+            na.value = "lightgrey")   +
+    geom_sf(aes(fill = total_spend),
+            colour = NA, size = 0.1)+
+  #   geom_sf(data = prov, color = "black", fill = NA)  +
+  # geom_sf_label(data = prov, aes(label = name)) +
+    theme(legend.position = "bottom")+ 
+    guides(fill = guide_colourbar(title = "Spend (€)", barwidth = 10, barheight = 0.5))
+```
+
+
+
+#### ChristenUnie
+
+
+
+```{r, fig.width=9, fig.height=5, dpi = 300}
+
+cu_dat %>% 
+    ggplot()  +
+    theme_void() +
+    scale_fill_gradient2(low = "lightgrey", high = color_dat %>% filter(party=="ChristenUnie") %>% .$colors,
+            na.value = "lightgrey")   +
+    geom_sf(aes(fill = total_spend),
+            colour = NA, size = 0.1)+
+  #   geom_sf(data = prov, color = "black", fill = NA)  +
+  # geom_sf_label(data = prov, aes(label = name)) +
+    theme(legend.position = "bottom")+ 
+    guides(fill = guide_colourbar(title = "Spend (€)", barwidth = 10, barheight = 0.5))
+```
+
+
+
+```{r,eval = F}
+library(leaflet)
+library(shiny)
+library(scales)
+
+# the_dat<-readRDS( "data/the_dat.rds")
+
+the_dat <- vvd_dat %>% 
+  # filter(gem_name == "Amsterdam") %>% 
+    # filter(prov_name == "Noord-Holland") %>%
+  mutate(total_spend = total_spend_old)
+
+saveRDS(the_dat, "data/the_dat.rds")
+
+pal <- colorNumeric(
+  palette = "GnBu",
+  domain = the_dat$total_spend)
+
+factop <- function(x) {
+  ifelse(is.na(x), 0.25, 0.7)
+}
+
+labels <- sprintf(
+  "<strong>%s</strong><br/>  Spend (€): %s",
+  paste0("POSTAL CODE: ", the_dat$pc4_code), ifelse(is.na(comma(the_dat$total_spend)), "No Spending Recorded", comma(round(the_dat$total_spend)))) %>%
+  lapply(HTML)
+
+leaflet(the_dat, options = leafletOptions(minZoom = 7, maxZoom = 14)) %>%
+  addProviderTiles("Stamen.TonerLite")%>%
+  addPolygons(
+    # fill
+    fillColor   = ~pal(total_spend),
+    fillOpacity = ~factop(total_spend),
+    # line
+    dashArray   = "3",
+    weight      = 2,
+    color       = "lightgrey",
+    opacity     = 0,
+    # interaction
+    highlight = highlightOptions(
+      weight = 5,
+      color = "black",
+      dashArray = "",
+      opacity     = 0.5,
+      fillOpacity = 0.7,
+      bringToFront = TRUE),
+  label = labels,
+  labelOptions = labelOptions(
+    style = list("font-weight" = "normal", padding = "3px 8px"),
+    textsize = "15px",
+    direction = "auto")) %>%
+  addLegend(
+    pal = pal, values = ~total_spend, opacity = 0.7, title = HTML("Spend (€)"),
+    position = "bottomright") %>%
+  setMaxBounds(lng1 = 3.3, lat1 = 50.7, lng2 = 7.3, lat2 = 53.7)  # Set max bounds to roughly cover the Netherlands
+
+
+```
+
+
+
+```{r,eval=F}
+total_sppppeen <- election_dat30 %>% 
+# filter(coalition == "Coalizione di centro-destra") %>% 
+  mutate(total_spend = total_spend_formatted) %>%
+  distinct(internal_id, .keep_all = T)  %>%
+  # mutate(total_spend = readr::parse_number(total_spend_formatted)) %>%
+  mutate(total_spend = ifelse(total_spend == 50, 1, total_spend)) %>% 
+  select(internal_id, total_spend, party) %>% 
+  arrange(desc(total_spend)) %>% 
+  group_by(party) %>% 
+  summarize(total_budget = sum(total_spend)) %>% 
+  ungroup()
+
+election_dat30 %>% 
+  filter(type == "language") %>% 
+  mutate(total_spend_formatted = total_spend_formatted*total_spend_pct) %>% 
+  group_by(value, party) %>% 
+  summarize(total_spend_formatted = sum(total_spend_formatted)) %>% 
+  arrange(desc(total_spend_formatted)) %>% 
+  ungroup() %>% 
+  group_by(party) %>% 
+  mutate(total = sum(total_spend_formatted)) %>% 
+  ungroup() %>% 
+  left_join(total_sppppeen) %>% 
+  mutate(perc = total_spend_formatted/total_budget) %>% 
+  ggplot(aes(value, perc)) +
+  geom_col() +
+  facet_wrap(~party, scales = "free_x")
+```
