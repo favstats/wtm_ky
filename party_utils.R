@@ -70,8 +70,8 @@ if(sets$cntry %in% country_codes){
     setColors() %>% 
     rename(colors = color)
 } else {
- polsample <- readRDS("data/polsample.rds")
- partycolorsdataset  <- readRDS("data/partycolorsdataset.rds")
+  polsample <- readRDS("../data/polsample.rds")
+  partycolorsdataset  <- readRDS("../data/partycolorsdataset.rds")
  
  color_dat <- polsample %>% 
    # count(cntry, partyfacts_id, sort = T) %>% View()
