@@ -122,17 +122,17 @@ if(sets$cntry %in% country_codes & nrow(thedat)!=0){
     filter(is.na(no_data)) %>% 
     drop_na(party) %>% 
     filter(party %in% color_dat$party)
-
+  
   
   election_dat7 <- readRDS("../data/election_dat7.rds") %>%
     rename(internal_id = page_id) %>%
     filter(is.na(no_data)) %>% 
     drop_na(party) %>% 
     filter(party %in% color_dat$party)
-
+  
 } else {
   
-  raw <- readRDS("data/election_dat30.rds") %>%
+  raw <- readRDS("../data/election_dat30.rds") %>%
     rename(internal_id = page_id) %>%
     filter(is.na(no_data)) %>% 
     filter(sources == "wtm")
@@ -141,13 +141,12 @@ if(sets$cntry %in% country_codes & nrow(thedat)!=0){
     election_dat30 <- tibble()
   } else {
     election_dat30 <- raw %>% 
-      drop_na(party) %>% 
-      filter(party %in% color_dat$party) 
+      drop_na(party)
   }
   
   
   
-  raw <- readRDS("data/election_dat7.rds") %>%
+  raw <- readRDS("../data/election_dat7.rds") %>%
     rename(internal_id = page_id) %>%
     filter(is.na(no_data)) %>% 
     filter(sources == "wtm")
@@ -156,10 +155,9 @@ if(sets$cntry %in% country_codes & nrow(thedat)!=0){
     election_dat7 <- tibble()
   } else {
     election_dat7 <- raw %>% 
-      drop_na(party) %>% 
-      filter(party %in% color_dat$party) 
+      drop_na(party) 
   }
-
+  
 }
 
 
