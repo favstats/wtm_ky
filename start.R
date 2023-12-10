@@ -1,9 +1,16 @@
 
 pacman::p_load(knitr, tidyverse, openxlsx, sf, rmarkdown)
-# setwd("C:/Users/fabio/Dropbox/postdoc/microdashboards/wtm_am/")
+# setwd("C:/Users/fabio/Dropbox/postdoc/microdashboards/wtm_iq/")
+# setwd("..")
+# getwd()
+color_dat <- readRDS("data/color_dat.rds")
+
 election_dat30 <- readRDS("data/election_dat30.rds") %>%
   rename(internal_id = page_id) %>%
-  filter(is.na(no_data)) 
+  filter(is.na(no_data)) %>% 
+  drop_na(party) %>% 
+  filter(party %in% color_dat$party) %>% 
+  filter(source != "tep")
 
 # rstudioapi::jobRunScript("fbadlibrary.R")
 try({

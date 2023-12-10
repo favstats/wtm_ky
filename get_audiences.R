@@ -79,7 +79,8 @@ polsample <- readRDS("data/polsample.rds")
 
 tep_dat <- polsample %>% 
   filter(cntry %in% sets$cntry) %>% 
-  mutate(source = "tep")
+  mutate(source = "tep") %>% 
+  rename(party = name_short)
 
 all_dat <- #read_csv("nl_advertisers.csv") %>%
   # mutate(page_id = as.character(page_id)) %>%

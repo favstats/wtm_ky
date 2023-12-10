@@ -1,0 +1,22 @@
+---
+title: "Data Report"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+```
+
+
+```{r}
+shiny::HTML('
+  
+<div style="text-align: center; padding: 50px; background-color: #f2f2f2; border-radius: 15px; font-family: Arial, sans-serif; color: #333;">
+    <h1 style="font-size: 3em; color: #4CAF50;">&#128308; No Data Available</h1>
+    <p style="font-size: 1.5em;">There is no data available for this country in the specified timeframe.</p>
+</div>
+  
+')
+```
+

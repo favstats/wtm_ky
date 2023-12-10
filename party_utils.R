@@ -91,6 +91,7 @@ if(sets$cntry %in% country_codes & nrow(thedat)!=0){
    drop_na(party)
 }
 
+saveRDS(color_dat, "../data/color_dat.rds")
 
 
 
@@ -121,8 +122,7 @@ if(sets$cntry %in% country_codes & nrow(thedat)!=0){
     filter(is.na(no_data)) %>% 
     drop_na(party) %>% 
     filter(party %in% color_dat$party)
-  
-  
+
   
   election_dat7 <- readRDS("../data/election_dat7.rds") %>%
     rename(internal_id = page_id) %>%
@@ -151,6 +151,9 @@ if(sets$cntry %in% country_codes & nrow(thedat)!=0){
 }
 
 
+
+# election_dat30test <<- election_dat30
+
 # saveRDS(election_dat30, "../data/election_dat30.rds")
 # saveRDS(election_dat7, "../data/election_dat7.rds")
 
@@ -164,8 +167,6 @@ tibble(fin,
   write_csv("../data/dates.csv")
 
 
-# Setting the system locale to Dutch for time/date formatting
-Sys.setlocale("LC_TIME", "nl_NL")
 
 # Function to create Dutch date strings with suffixes
 create_date <- function(x) {
@@ -185,19 +186,25 @@ last30days_string <- paste0(create_date(begin30), " - ", create_date(fin), " ", 
 # Sys.setlocale("LC_TIME", "C")
 
 
-
-
-
-the_currency <- election_dat30 %>%
-  count(main_currency, sort = T) %>%
-  slice(1) %>%
-  pull(main_currency)
-
-if(the_currency == "EUR"){
-  currency_symbol <- "€"
-} else if(the_currency=="INR"){
-  currency_symbol <- "₹"
-} else {
-  currency_symbol <- the_currency
+if(nrow(election_dat30)!=0){
+  
+  the_currency <- election_dat30 %>%
+    count(main_currency, sort = T) %>%
+    slice(1) %>%
+    pull(main_currency)
+  
+  if(the_currency == "EUR"){
+    currency_symbol <- "€"
+  } else if(the_currency=="INR"){
+    currency_symbol <- "₹"
+  } else if(the_currency=="USD"){
+    currency_symbol <- "$"
+  } else {
+    currency_symbol <- the_currency
+  }
+  
 }
+
+
+
 
