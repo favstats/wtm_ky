@@ -82,9 +82,9 @@ tep_dat <- polsample %>%
   mutate(source = "tep") %>% 
   rename(party = name_short)
 
-last7 <- paste0(read_rds("https://github.com/favstats/tarcket/raw/main/reports/", sets$cntry,"/last_7_days.rds")) %>% 
+last7 <- read_rds(paste0("https://github.com/favstats/tarcket/raw/main/reports/", sets$cntry,"/last_7_days.rds")) %>% 
   mutate(source = "report") %>% 
-  rename(party = "unknown")
+  mutate(party = "unknown")
 
 all_dat <- #read_csv("nl_advertisers.csv") %>%
   # mutate(page_id = as.character(page_id)) %>%
