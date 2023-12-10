@@ -82,11 +82,16 @@ tep_dat <- polsample %>%
   mutate(source = "tep") %>% 
   rename(party = name_short)
 
+last7 <- paste0(read_rds("https://github.com/favstats/tarcket/raw/main/reports/", sets$cntry,"/last_7_days.rds")) %>% 
+  mutate(source = "report") %>% 
+  rename(party = "unknown")
+
 all_dat <- #read_csv("nl_advertisers.csv") %>%
   # mutate(page_id = as.character(page_id)) %>%
   # bind_rows(internal_page_ids) %>%
   bind_rows(wtm_data) %>%
   bind_rows(tep_dat) %>%
+  bind_rows(last7) %>%
   # bind_rows(rep) %>%
   # bind_rows(more_data %>% mutate(source = "new")) %>%
   # bind_rows(groenams) %>%
@@ -96,7 +101,7 @@ all_dat <- #read_csv("nl_advertisers.csv") %>%
   filter(!remove_em) %>%
   # filter(n >= 2) %>%
   # filter(n >= 2 & str_ends(page_id, "0", negate = T)) %>%
-  select(-n)  
+  select(-n) 
 
 
 # all_dat %>% filter(str_detect(page_name, "GroenLinks-PvdA"))
@@ -104,6 +109,8 @@ all_dat <- #read_csv("nl_advertisers.csv") %>%
 saveRDS(all_dat, "data/all_dat.rds")
 
 # all_dat %>% filter(page_id == "492150400807824")
+
+
 
 scraper <- function(.x, time = tf) {
   
@@ -149,7 +156,8 @@ if(new_ds == latest_ds){
   enddat <- all_dat %>% 
     arrange(page_id) %>%
     # slice(1:150) %>% 
-    filter(!(page_id %in% latest_elex$page_id)) %>% 
+    filter(!(page_id %in% latest_elex$page_id))  %>% 
+    filter(page_id %in% last7$page_id) %>% 
     split(1:nrow(.)) %>%
     map_dfr_progress(scraper) 
   
