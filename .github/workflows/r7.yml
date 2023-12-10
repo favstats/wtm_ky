@@ -60,6 +60,7 @@ jobs:
             any::sf
             any::prettydoc
             any::DT
+            any::priceR
       - run: echo "🍏 This job's status is ${{ job.status }}."
       - name: "Install Packages"
         run: |

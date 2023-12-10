@@ -132,21 +132,33 @@ if(sets$cntry %in% country_codes & nrow(thedat)!=0){
 
 } else {
   
-  election_dat30 <- readRDS("../data/election_dat30.rds") %>%
+  raw <- readRDS("data/election_dat30.rds") %>%
     rename(internal_id = page_id) %>%
     filter(is.na(no_data)) %>% 
-    drop_na(party) %>% 
-    filter(party %in% color_dat$party) %>% 
-    filter(sources != "tep")
+    filter(sources == "wtm")
+  
+  if(nrow(raw)==0){
+    election_dat30 <- tibble()
+  } else {
+    election_dat30 <- raw %>% 
+      drop_na(party) %>% 
+      filter(party %in% color_dat$party) 
+  }
   
   
   
-  election_dat7 <- readRDS("../data/election_dat7.rds") %>%
+  raw <- readRDS("data/election_dat7.rds") %>%
     rename(internal_id = page_id) %>%
     filter(is.na(no_data)) %>% 
-    drop_na(party) %>% 
-    filter(party %in% color_dat$party) %>% 
-    filter(sources != "tep")
+    filter(sources == "wtm")
+  
+  if(nrow(raw)==0){
+    election_dat7 <- tibble()
+  } else {
+    election_dat7 <- raw %>% 
+      drop_na(party) %>% 
+      filter(party %in% color_dat$party) 
+  }
 
 }
 
@@ -193,17 +205,17 @@ if(nrow(election_dat30)!=0){
     slice(1) %>%
     pull(main_currency)
   
-  if(the_currency == "EUR"){
-    currency_symbol <- "€"
-  } else if(the_currency=="INR"){
-    currency_symbol <- "₹"
-  } else if(the_currency=="USD"){
-    currency_symbol <- "$"
-  } else {
+  currency_symbol <- priceR::currency_info %>% 
+    filter(iso_code == the_currency) %>% 
+    pull(symbol)
+  
+  if(is.null(currency_symbol)){
     currency_symbol <- the_currency
   }
   
 }
+
+
 
 
 
