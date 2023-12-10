@@ -69,7 +69,7 @@ wtm_data <- read_csv("data/wtm_advertisers.csv") %>% #names
   select(page_id = advertisers_platforms.advertiser_platform_ref,
          page_name = name, party = entities.short_name)  %>%
   mutate(page_id = as.character(page_id)) %>% 
-  mutate(source = "wtm")
+  mutate(sources = "wtm")
 
 } else {
   wtm_data <-  tibble(no_data = T)
@@ -79,11 +79,11 @@ polsample <- readRDS("data/polsample.rds")
 
 tep_dat <- polsample %>% 
   filter(cntry %in% sets$cntry) %>% 
-  mutate(source = "tep") %>% 
+  mutate(sources = "tep") %>% 
   rename(party = name_short)
 
 last7 <- read_rds(paste0("https://github.com/favstats/tarcket/raw/main/reports/", sets$cntry,"/last_7_days.rds")) %>% 
-  mutate(source = "report") %>% 
+  mutate(sources = "report") %>% 
   mutate(party = "unknown")
 
 all_dat <- #read_csv("nl_advertisers.csv") %>%
@@ -93,7 +93,7 @@ all_dat <- #read_csv("nl_advertisers.csv") %>%
   bind_rows(tep_dat) %>%
   bind_rows(last7) %>%
   # bind_rows(rep) %>%
-  # bind_rows(more_data %>% mutate(source = "new")) %>%
+  # bind_rows(more_data %>% mutate(sources = "new")) %>%
   # bind_rows(groenams) %>%
   distinct(page_id, .keep_all = T) %>%
   add_count(page_name, sort  =T) %>%
@@ -285,7 +285,7 @@ if("ds" %in% names(election_dat) ){
 
 }
 
-# source("start.R")
+# sources("start.R")
 
 
 

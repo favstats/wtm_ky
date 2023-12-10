@@ -22,7 +22,7 @@ options(scipen = 999)
 # wtm_data %>% count(party,sort = T)
 
 
-# source("../party_utils.R")
+# sources("../party_utils.R")
 setColors <- function(df) {
   # Check if the 'color' column exists
   if (!"color" %in% names(df)) {
@@ -137,7 +137,7 @@ if(sets$cntry %in% country_codes & nrow(thedat)!=0){
     filter(is.na(no_data)) %>% 
     drop_na(party) %>% 
     filter(party %in% color_dat$party) %>% 
-    filter(source != "tep")
+    filter(sources != "tep")
   
   
   
@@ -146,7 +146,7 @@ if(sets$cntry %in% country_codes & nrow(thedat)!=0){
     filter(is.na(no_data)) %>% 
     drop_na(party) %>% 
     filter(party %in% color_dat$party) %>% 
-    filter(source != "tep")
+    filter(sources != "tep")
 
 }
 
