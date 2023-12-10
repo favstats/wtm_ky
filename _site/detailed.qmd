@@ -208,7 +208,9 @@ generate_plots <- function(data, exclusion = F) {
 # Generate plots
 plots <- generate_plots(contested_dat30)
 
-# Map each plot to a column
+if(length(plots)!=0){
+
+  # Map each plot to a column
 columns <- map(plots, ~ div(style = "width: 50%; float: left;", .x))
 
 # If there's an odd number of plots, add an empty div to the end to balance the columns
@@ -228,6 +230,13 @@ rows <- map(seq(from = 1, to = length(columns), by = 2), ~ {
 
 # Print the rows
 tags$div(class = "container", do.call(tags$div, rows))
+
+
+
+}  else {
+  shiny::HTML("No data (yet).")
+}
+
 
 
 ```
@@ -242,7 +251,9 @@ tags$div(class = "container", do.call(tags$div, rows))
 # Generate plots
 plots <- generate_plots(contested_dat7)
 
-# Map each plot to a column
+if(length(plots)!=0){
+
+  # Map each plot to a column
 columns <- map(plots, ~ div(style = "width: 50%; float: left;", .x))
 
 # If there's an odd number of plots, add an empty div to the end to balance the columns
@@ -262,6 +273,12 @@ rows <- map(seq(from = 1, to = length(columns), by = 2), ~ {
 
 # Print the rows
 tags$div(class = "container", do.call(tags$div, rows))
+
+
+
+}  else {
+  shiny::HTML("No data (yet).")
+}
 
 
 ```
