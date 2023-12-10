@@ -2,6 +2,8 @@
 # print("hello")
 # 
 # print(getwd())
+# getwd()
+# setwd("_site")
 
 library(httr)
 
@@ -58,7 +60,11 @@ country_codes <- c("AD", "AL", "AM", "AR", "AT",
                    "VE", "ZA")
 
 
-if(sets$cntry %in% country_codes){
+download.file(paste0("https://data-api.whotargets.me/advertisers-export-csv?countries.alpha2=", str_to_lower(sets$cntry)), destfile = "data/wtm_advertisers.csv")
+
+thedat <- read_csv("../data/wtm_advertisers.csv")
+
+if(sets$cntry %in% country_codes & nrow(thedat)!=0){
   res <- GET(url = paste0("https://data-api.whotargets.me/entities?%24client%5BwithCountries%5D=true&countries.alpha2%5B%24in%5D%5B0%5D=", str_to_lower(sets$cntry)))
   color_dat <- content(res) %>% 
     flatten() %>% 
@@ -108,7 +114,7 @@ scale_color_parties <- function(...){
 }
 
 
-if(sets$cntry %in% country_codes){
+if(sets$cntry %in% country_codes & nrow(thedat)!=0){
   
   election_dat30 <- readRDS("../data/election_dat30.rds") %>%
     rename(internal_id = page_id) %>%
