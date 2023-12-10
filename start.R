@@ -5,17 +5,25 @@ pacman::p_load(knitr, tidyverse, openxlsx, sf, rmarkdown)
 # getwd()
 color_dat <- readRDS("data/color_dat.rds")
 
-election_dat30 <- readRDS("data/election_dat30.rds") %>%
+raw <- readRDS("data/election_dat30.rds") %>%
   rename(internal_id = page_id) %>%
   filter(is.na(no_data)) %>% 
-  drop_na(party) %>% 
-  filter(party %in% color_dat$party) %>% 
-  filter(source != "tep")
+  filter(sources == "wtm")
+
+if(nrow(raw)==0){
+  election_dat30 <- tibble()
+} else {
+  election_dat30 <- raw %>% 
+    drop_na(party) %>% 
+    filter(party %in% color_dat$party) 
+}
+
+
 
 # rstudioapi::jobRunScript("fbadlibrary.R")
 try({
   
-
+  
   
   
   if(nrow(election_dat30)!=0){
@@ -47,7 +55,7 @@ try({
     
   }
   
-
+  
   
   
   
