@@ -162,6 +162,7 @@ if(sets$cntry %in% country_codes & nrow(thedat)!=0){
   
 }
 
+print("hello")
 
 
 # election_dat30test <<- election_dat30
@@ -179,7 +180,7 @@ tibble(fin,
   write_csv("../data/dates.csv")
 
 
-s
+
 # Function to create Dutch date strings with suffixes
 create_date <- function(x) {
   the_date <- format(x, "%e %b") # %e for day of the month without leading zeros, %B for full month name in Dutch
@@ -187,8 +188,8 @@ create_date <- function(x) {
   return(trimws(the_date)) # trimws to remove any leading or trailing whitespace which might be left after %e
 }
 
-last7days_string <- paste0(create_date(begin7), " - ", create_date(fin), " ", lubridate::year(fin)) %>% str_replace("Oct", "Okt")
-last30days_string <- paste0(create_date(begin30), " - ", create_date(fin), " ", lubridate::year(fin)) %>% str_replace("Oct", "Okt")
+last7days_string <- paste0(create_date(begin7), " - ", create_date(fin), " ", lubridate::year(fin)) 
+last30days_string <- paste0(create_date(begin30), " - ", create_date(fin), " ", lubridate::year(fin)) 
 
 # # Print the Dutch date range strings
 # print(last7days_string)
@@ -196,7 +197,7 @@ last30days_string <- paste0(create_date(begin30), " - ", create_date(fin), " ", 
 # 
 # # Reset locale back to the original if necessary
 # Sys.setlocale("LC_TIME", "C")
-
+print("oo")
 
 if(nrow(election_dat30)!=0){
   
