@@ -31,6 +31,10 @@ new_ds <- jb %>% arrange(ds) %>% slice(1) %>% pull(ds)
 
 latest_elex <- readRDS(paste0("data/election_dat", tf, ".rds"))
 
+if(!("ds" %in% names(latest_elex))){
+  latest_elex <- latest_elex %>% mutate(ds = "")
+}
+
 latest_ds <- latest_elex %>% arrange(ds) %>% slice(1) %>% pull(ds)
 
 
@@ -61,10 +65,12 @@ country_codes <- c("AD", "AL", "AM", "AR", "AT",
                    "SK", "SM", "TR", "UA", "US", 
                    "VE", "ZA")
 
-if(sets$cntry %in% country_codes){
-  
 download.file(paste0("https://data-api.whotargets.me/advertisers-export-csv?countries.alpha2=", str_to_lower(sets$cntry)), destfile = "data/wtm_advertisers.csv")
 
+thedat <- read_csv("data/wtm_advertisers.csv")
+
+if(sets$cntry %in% country_codes & nrow(thedat)!=0){
+  
 wtm_data <- read_csv("data/wtm_advertisers.csv") %>% #names
   select(page_id = advertisers_platforms.advertiser_platform_ref,
          page_name = name, party = entities.short_name)  %>%
