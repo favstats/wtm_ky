@@ -1,8 +1,11 @@
 name: "Render"
 on:
-  push:
-    branches:
-      - main
+  schedule:
+    - cron: '0 18 * * *'
+# on:
+#   push:
+#     branches:
+#       - main
       
 
 jobs:
