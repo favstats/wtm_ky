@@ -1,7 +1,7 @@
-name: "30 Timeframe"
+name: "90 Timeframe"
 on:
   schedule:
-    - cron: '0 23,0,11,12 * * *'
+    - cron: '0 4,5,16,17 * * *'
 
 jobs:
   update-data:
@@ -67,10 +67,10 @@ jobs:
           remotes::install_github('hadley/emo')
         shell: Rscript {0}
       - name: "Script - Run"
-        run: Rscript 'get_audiences.R' 30
+        run: Rscript 'get_audiences.R' 90
       - name: "Script - Update Dashboard"
         run: Rscript 'start.R'
       - name: "Commit"
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: Script Routine Thirty
+          commit_message: Script Routine Ninety
