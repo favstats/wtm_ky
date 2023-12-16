@@ -1,5 +1,8 @@
 name: "30 Timeframe"
 on:
+  push:
+    branches:
+      - main
   schedule:
     - cron: '0 23,0,11,12 * * *'
 
