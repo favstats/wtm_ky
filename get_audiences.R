@@ -1,8 +1,8 @@
 # Get command-line arguments
 tf <- commandArgs(trailingOnly = TRUE)
 
-
-
+# setwd("template")
+# getwd()
 source("utils.R")
 # ?get_targeting
 # get_targeting("41459763029", timeframe = "LAST_90_DAYS")
@@ -20,7 +20,7 @@ write_lines(title_txt, "_site/_quarto.yml")
 
 if(Sys.info()[["sysname"]]=="Windows"){
   ### CHANGE ME WHEN LOCAL!
-  tf <- "7"
+  tf <- "90"
   print(paste0("TF: ", tf))
 }
 
@@ -29,7 +29,13 @@ jb <- get_targeting("7860876103", timeframe = glue::glue("LAST_90_DAYS"))
 new_ds <- jb %>% arrange(ds) %>% slice(1) %>% pull(ds)
 # new_ds <- "2023-01-01"
 
-latest_elex <- readRDS(paste0("data/election_dat", tf, ".rds"))
+try({
+  latest_elex <- readRDS(paste0("data/election_dat", tf, ".rds"))
+})
+
+if(!exists("latest_elex")){
+  latest_elex <- tibble()
+}
 
 if(!("ds" %in% names(latest_elex))){
   latest_elex <- latest_elex %>% mutate(ds = "")
@@ -37,6 +43,9 @@ if(!("ds" %in% names(latest_elex))){
 
 latest_ds <- latest_elex %>% arrange(ds) %>% slice(1) %>% pull(ds)
 
+if(length(latest_ds)==0){
+  latest_ds <- "2023-01-01"
+}
 
 
 tstamp <- Sys.time()
@@ -88,9 +97,16 @@ tep_dat <- polsample %>%
   mutate(sources = "tep") %>% 
   rename(party = name_short)
 
-last7 <- read_rds(paste0("https://github.com/favstats/tarcket/raw/main/reports/", sets$cntry,"/last_7_days.rds")) %>% 
-  mutate(sources = "report") %>% 
-  mutate(party = "unknown")
+try({
+  last7 <- read_rds(paste0("https://github.com/favstats/tarcket/raw/main/reports/", sets$cntry,"/last_7_days.rds")) %>% 
+    mutate(sources = "report") %>% 
+    mutate(party = "unknown")
+})
+
+if(!exists("last7")){
+  last7 <- tibble()
+}
+
 
 all_dat <- #read_csv("nl_advertisers.csv") %>%
   # mutate(page_id = as.character(page_id)) %>%
