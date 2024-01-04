@@ -98,9 +98,15 @@ tep_dat <- polsample %>%
   rename(party = name_short)
 
 try({
-  last7 <- read_rds(paste0("https://github.com/favstats/tarcket/raw/main/reports/", sets$cntry,"/last_7_days.rds")) %>% 
+  download.file(paste0("https://github.com/favstats/meta_ad_reports/releases/download/", sets$cntry,"-last_", tf,"_days/latest.rds"), 
+                destfile = "report.rds"
+                )
+  
+  last7 <- readRDS("report.rds")%>% 
     mutate(sources = "report") %>% 
     mutate(party = "unknown")
+  
+  file.remove("report.rds")
 })
 
 if(!exists("last7")){
