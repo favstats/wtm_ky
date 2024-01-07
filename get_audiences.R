@@ -98,7 +98,7 @@ tep_dat <- polsample %>%
   rename(party = name_short)
 
 try({
-  download.file(paste0("https://github.com/favstats/meta_ad_reports/releases/download/", sets$cntry,"-last_", tf,"_days/latest.rds"), 
+  download.file(paste0("https://github.com/favstats/meta_ad_reports/releases/download/", sets$cntry,"-last_90_days/latest.rds"), 
                 destfile = "report.rds"
                 )
   
