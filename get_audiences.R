@@ -11,6 +11,7 @@ source("utils.R")
 library(httr)
 library(tidyverse)
 library(lubridate)
+library(rvest)
 
 sets <- jsonlite::fromJSON("settings.json")
 
@@ -98,7 +99,51 @@ tep_dat <- polsample %>%
   rename(party = name_short)
 
 try({
-  download.file(paste0("https://github.com/favstats/meta_ad_reports/releases/download/", sets$cntry,"-last_90_days/latest.rds"), 
+  
+  out <- sets$cntry %>% 
+    map(~{
+      .x %>% 
+        paste0(c("-yesterday", "-last_7_days", "-last_30_days", 
+                 "-last_90_days"))
+    }) %>% 
+    unlist() %>% 
+    .[str_detect(., "last_90_days")] %>% 
+    # .[100:120] %>% 
+    map_dfr_progress(~{
+      the_assets <- httr::GET(paste0("https://github.com/favstats/meta_ad_reports/releases/expanded_assets/", .x))
+      
+      the_assets %>% httr::content() %>% 
+        html_elements(".Box-row") %>% 
+        html_text()  %>%
+        tibble(raw = .)   %>%
+        # Split the raw column into separate lines
+        mutate(raw = strsplit(as.character(raw), "\n")) %>%
+        # Extract the relevant lines for filename, file size, and timestamp
+        transmute(
+          filename = sapply(raw, function(x) trimws(x[3])),
+          file_size = sapply(raw, function(x) trimws(x[6])),
+          timestamp = sapply(raw, function(x) trimws(x[7]))
+        ) %>% 
+        filter(filename != "Source code") %>% 
+        mutate(release = .x) %>% 
+        mutate_all(as.character)
+    })
+  
+  
+  latest <- out  %>% 
+    rename(tag = release,
+           file_name = filename) %>% 
+    arrange(desc(tag)) %>% 
+    separate(tag, into = c("country", "timeframe"), remove = F, sep = "-") %>% 
+    filter(str_detect(file_name, "rds")) %>% 
+    mutate(day  = str_remove(file_name, "\\.rds|\\.zip") %>% lubridate::ymd()) %>% 
+    arrange(desc(day)) %>% 
+    group_by(country) %>% 
+    slice(1) %>% 
+    ungroup() 
+  
+  
+  download.file(paste0("https://github.com/favstats/meta_ad_reports/releases/download/", sets$cntry,"-last_90_days/", latest$file_name), 
                 destfile = "report.rds"
                 )
   
