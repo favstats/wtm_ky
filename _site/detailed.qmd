@@ -1,7 +1,6 @@
 ---
 title: "Detailed Targeting"
 description-meta: "How do political parties chase your vote, what do they want to keep hidden, and how much money do they spend on it? In the lead-up to the elections, we monitor political microtargeting."
-lang: nl
 format:
   html:
     toc: true
@@ -10,6 +9,7 @@ format:
 
 
 ```{r setup, include=FALSE}
+here::i_am("wtm_tw.Rproj")
 
 ## Global options
 knitr::opts_chunk$set(
@@ -30,9 +30,8 @@ library(gt)
 pacman::p_load(knitr, tidyverse, rmarkdown, openxlsx, sf, shiny)
 
 
-source("../utils.R")
-
-source("../party_utils.R")
+source(here::here("utils.R"))
+source(here::here("party_utils.R"))
 ```
 
 
@@ -327,7 +326,8 @@ excluded_dat30 <- interest_excluding30 %>%
   group_by(party) %>%
   # mutate(total_spenderino = sum(total_spend)) %>%
   mutate(perc = total_spend/total_spenderino) %>%
-  mutate(value = str_remove_all(value, "INTERESTS: |DEMOGRAPHICS: |BEHAVIORS: ")) #%>%
+  mutate(value = str_remove_all(value, "INTERESTS: |DEMOGRAPHICS: |BEHAVIORS: ")) %>%
+  filter(perc >= 0.005)
   # mutate(value = str_replace_all(value, " \\s*\\([^\\)]+\\)", ""))
 
 
@@ -362,7 +362,8 @@ excluded_dat7 <- interest_excluding7 %>%
   group_by(party) %>%
   # mutate(total_spenderino = sum(total_spend)) %>%
   mutate(perc = total_spend/total_spenderino) %>%
-  mutate(value = str_remove_all(value, "INTERESTS: |DEMOGRAPHICS: |BEHAVIORS: ")) #%>%
+  mutate(value = str_remove_all(value, "INTERESTS: |DEMOGRAPHICS: |BEHAVIORS: ")) %>%
+  filter(perc >= 0.005)#%>%
   # mutate(value = str_replace_all(value, " \\s*\\([^\\)]+\\)", ""))
 
 ```

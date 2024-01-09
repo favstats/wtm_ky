@@ -6,10 +6,12 @@ format:
 ---
 
 ```{r, echo = F, warning=F, message=F}
-library(tidyverse)
-sets <- jsonlite::fromJSON("../settings.json")
+here::i_am("wtm_tw.Rproj")
 
-source("../party_utils.R")
+library(tidyverse)
+sets <- jsonlite::fromJSON(here::here("settings.json"))
+
+source(here::here("party_utils.R"))
 ```
 
 

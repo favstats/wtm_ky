@@ -7,11 +7,17 @@
 
 library(httr)
 
-all_dat <- readRDS("../data/all_dat.rds")
+custom <- F
+
+here::i_am("wtm_tw.Rproj")
+
+source(here::here("cntry.R"))
+
+all_dat <- readRDS(here::here("data/all_dat.rds"))
 
 # print("hello")
 
-sets <- jsonlite::fromJSON("../settings.json")
+sets <- jsonlite::fromJSON(here::here("settings.json"))
 
 
 
@@ -22,7 +28,7 @@ options(scipen = 999)
 # wtm_data %>% count(party,sort = T)
 
 
-# sources("../party_utils.R")
+# sources("here::here(party_utils.R")
 setColors <- function(df) {
   # Check if the 'color' column exists
   if (!"color" %in% names(df)) {
@@ -62,36 +68,38 @@ country_codes <- c("AD", "AL", "AM", "AR", "AT",
 
 download.file(paste0("https://data-api.whotargets.me/advertisers-export-csv?countries.alpha2=", str_to_lower(sets$cntry)), destfile = "data/wtm_advertisers.csv")
 
-thedat <- read_csv("../data/wtm_advertisers.csv")
+thedat <- read_csv(here::here("data/wtm_advertisers.csv"))
 
-if(sets$cntry %in% country_codes & nrow(thedat)!=0){
-  res <- GET(url = paste0("https://data-api.whotargets.me/entities?%24client%5BwithCountries%5D=true&countries.alpha2%5B%24in%5D%5B0%5D=", str_to_lower(sets$cntry)))
-  color_dat <- content(res) %>% 
-    flatten() %>% 
-    map(compact)%>% 
-    map_dfr(as_tibble) %>% 
-    drop_na(id) %>% 
-    rename(party = short_name) %>% 
-    select(party, contains("color")) %>% 
-    setColors() %>% 
-    rename(colors = color)
-} else {
-  polsample <- readRDS("../data/polsample.rds")
-  partycolorsdataset  <- readRDS("../data/partycolorsdataset.rds")
+if(!custom){
+  if(sets$cntry %in% country_codes & nrow(thedat)!=0){
+    res <- GET(url = paste0("https://data-api.whotargets.me/entities?%24client%5BwithCountries%5D=true&countries.alpha2%5B%24in%5D%5B0%5D=", str_to_lower(sets$cntry)))
+    color_dat <- content(res) %>% 
+      flatten() %>% 
+      map(compact)%>% 
+      map_dfr(as_tibble) %>% 
+      drop_na(id) %>% 
+      rename(party = short_name) %>% 
+      select(party, contains("color")) %>% 
+      setColors() %>% 
+      rename(colors = color)
+  } else {
+    polsample <- readRDS(here::here("data/polsample.rds"))
+    partycolorsdataset  <- readRDS(here::here("data/partycolorsdataset.rds"))
+    
+    color_dat <- polsample %>% 
+      # count(cntry, partyfacts_id, sort = T) %>% View()
+      filter(cntry == sets$cntry) %>%
+      select(party = name_short, partyfacts_id) %>% 
+      distinct(partyfacts_id, party) %>% 
+      left_join(partycolorsdataset %>% mutate(partyfacts_id = as.character(partyfacts_id))) %>% 
+      select(party, color = hex)  %>% 
+      setColors() %>% 
+      rename(colors = color) %>% 
+      drop_na(party)
+  }
   
-  color_dat <- polsample %>% 
-    # count(cntry, partyfacts_id, sort = T) %>% View()
-    filter(cntry == sets$cntry) %>%
-    select(party = name_short, partyfacts_id) %>% 
-    distinct(partyfacts_id, party) %>% 
-    left_join(partycolorsdataset %>% mutate(partyfacts_id = as.character(partyfacts_id))) %>% 
-    select(party, color = hex)  %>% 
-    setColors() %>% 
-    rename(colors = color) %>% 
-    drop_na(party)
-}
-
-saveRDS(color_dat, "../data/color_dat.rds")
+  saveRDS(color_dat, here::here("data/color_dat.rds"))
+} 
 
 
 
@@ -114,26 +122,77 @@ scale_color_parties <- function(...){
   )
 }
 
+# print("hello")
+
+if(custom){
+  election_dat30 <- readRDS(here::here("data/election_dat30.rds"))  %>% 
+    select(-contains("party")) %>%
+    left_join(all_dat %>% distinct(page_id, party))
+  
+  election_dat7 <- readRDS(here::here("data/election_dat7.rds"))  %>% 
+    select(-contains("party")) %>%
+    left_join(all_dat %>% distinct(page_id, party))
+}
+
+if(!exists("election_dat30")){
+  election_dat30 <- readRDS(here::here("data/election_dat30.rds")) 
+}
+
+if(!exists("election_dat7")){
+  election_dat7 <- readRDS(here::here("data/election_dat7.rds"))
+}
+# print("hello2")
 
 if(sets$cntry %in% country_codes & nrow(thedat)!=0){
   
-  election_dat30 <- readRDS("../data/election_dat30.rds") %>%
-    rename(internal_id = page_id) %>%
+  
+  
+  
+  election_dat30 <- election_dat30 %>%
+    rename(internal_id = contains("page_id")) %>%
     filter(is.na(no_data)) %>% 
     drop_na(party) %>% 
     filter(party %in% color_dat$party)
   
   
-  election_dat7 <- readRDS("../data/election_dat7.rds") %>%
-    rename(internal_id = page_id) %>%
+  election_dat7 <- election_dat7 %>%
+    rename(internal_id = contains("page_id")) %>%
     filter(is.na(no_data)) %>% 
     drop_na(party) %>% 
     filter(party %in% color_dat$party)
+  
+} else if (custom){
+  
+  raw <- election_dat30 %>%
+    rename(internal_id = contains("page_id")) %>%
+    filter(is.na(no_data)) 
+  
+  if(nrow(raw)==0){
+    election_dat30 <- tibble()
+  } else {
+    election_dat30 <- raw %>% 
+      drop_na(party) %>% 
+      filter(party %in% color_dat$party)
+  }
+  
+  
+  
+  raw <- election_dat7 %>%
+    rename(internal_id = contains("page_id")) %>%
+    filter(is.na(no_data)) 
+  
+  if(nrow(raw)==0){
+    election_dat7 <- tibble()
+  } else {
+    election_dat7 <- raw %>% 
+      drop_na(party)  %>% 
+      filter(party %in% color_dat$party)
+  }
   
 } else {
   
-  raw <- readRDS("../data/election_dat30.rds") %>%
-    rename(internal_id = page_id) %>%
+  raw <- election_dat30 %>%
+    rename(internal_id = contains("page_id")) %>%
     filter(is.na(no_data)) %>% 
     filter(sources == "wtm")
   
@@ -147,8 +206,8 @@ if(sets$cntry %in% country_codes & nrow(thedat)!=0){
   
   
   
-  raw <- readRDS("../data/election_dat7.rds") %>%
-    rename(internal_id = page_id) %>%
+  raw <- election_dat7 %>%
+    rename(internal_id = contains("page_id")) %>%
     filter(is.na(no_data)) %>% 
     filter(sources == "wtm")
   
@@ -162,13 +221,14 @@ if(sets$cntry %in% country_codes & nrow(thedat)!=0){
   
 }
 
-print("hello")
+
+# print(glimpse(election_dat30))
 
 
 # election_dat30test <<- election_dat30
 
-# saveRDS(election_dat30, "../data/election_dat30.rds")
-# saveRDS(election_dat7, "../data/election_dat7.rds")
+# saveRDS(election_dat30, "here::here(data/election_dat30.rds")
+# saveRDS(election_dat7, "here::here(data/election_dat7.rds")
 
 fin <- (as.Date(election_dat30$ds[1])-lubridate::days(1))
 begin7 <- fin-lubridate::days(6)
@@ -177,7 +237,7 @@ begin30 <- fin-lubridate::days(29)
 tibble(fin,
        begin7,
        begin30) %>% 
-  write_csv("../data/dates.csv")
+  write_csv(here::here("dates.csv"))
 
 
 
@@ -197,7 +257,7 @@ last30days_string <- paste0(create_date(begin30), " - ", create_date(fin), " ", 
 # 
 # # Reset locale back to the original if necessary
 # Sys.setlocale("LC_TIME", "C")
-print("oo")
+# print("oo")
 
 if(nrow(election_dat30)!=0){
   

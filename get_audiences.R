@@ -1,6 +1,8 @@
 # Get command-line arguments
 tf <- commandArgs(trailingOnly = TRUE)
 
+here::i_am("wtm_tw.Rproj")
+
 # setwd("template")
 # getwd()
 source("utils.R")
@@ -21,7 +23,7 @@ write_lines(title_txt, "_site/_quarto.yml")
 
 if(Sys.info()[["sysname"]]=="Windows"){
   ### CHANGE ME WHEN LOCAL!
-  tf <- "90"
+  tf <- "30"
   print(paste0("TF: ", tf))
 }
 
@@ -81,12 +83,12 @@ thedat <- read_csv("data/wtm_advertisers.csv")
 
 if(sets$cntry %in% country_codes & nrow(thedat)!=0){
   
-wtm_data <- read_csv("data/wtm_advertisers.csv") %>% #names
-  select(page_id = advertisers_platforms.advertiser_platform_ref,
-         page_name = name, party = entities.short_name)  %>%
-  mutate(page_id = as.character(page_id)) %>% 
-  mutate(sources = "wtm")
-
+  wtm_data <- read_csv("data/wtm_advertisers.csv") %>% #names
+    select(page_id = advertisers_platforms.advertiser_platform_ref,
+           page_name = name, party = entities.short_name)  %>%
+    mutate(page_id = as.character(page_id)) %>% 
+    mutate(sources = "wtm")
+  
 } else {
   wtm_data <-  tibble(no_data = T)
 }
@@ -145,7 +147,7 @@ try({
   
   download.file(paste0("https://github.com/favstats/meta_ad_reports/releases/download/", sets$cntry,"-last_90_days/", latest$file_name), 
                 destfile = "report.rds"
-                )
+  )
   
   last7 <- readRDS("report.rds")%>% 
     mutate(sources = "report") %>% 
@@ -181,6 +183,8 @@ all_dat <- #read_csv("nl_advertisers.csv") %>%
 
 saveRDS(all_dat, "data/all_dat.rds")
 
+source("cntry.R")
+
 # all_dat %>% filter(page_id == "492150400807824")
 
 
@@ -203,7 +207,7 @@ scraper <- function(.x, time = tf) {
     saveRDS(fin, file = path)
     # }
   } else {
-   fin <- tibble(internal_id = .x$page_id, no_data = T) %>%
+    fin <- tibble(internal_id = .x$page_id, no_data = T) %>%
       mutate(tstamp = tstamp)
   }
   
@@ -252,8 +256,8 @@ if(new_ds == latest_ds){
     saveRDS(election_dat, file = paste0(current_date, ".rds"))
   }
   
-
-  } else {
+  
+} else {
   
   ### save seperately
   election_dat <- all_dat %>% 
@@ -355,7 +359,7 @@ if("ds" %in% names(election_dat) ){
     }
     
   })
-
+  
 }
 
 # sources("start.R")

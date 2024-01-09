@@ -8,6 +8,7 @@ format:
 ---
 
 ```{r setup, include=FALSE}
+here::i_am("wtm_tw.Rproj")
 
 ## Global options
 knitr::opts_chunk$set(
@@ -26,9 +27,9 @@ library(gt)
 
 pacman::p_load(knitr, tidyverse, rmarkdown, openxlsx, sf, shiny)
 
-
-source("../utils.R")
-source("../party_utils.R")
+# here::dr_here()
+source(here::here("utils.R"))
+source(here::here("party_utils.R"))
 
 ```
 
@@ -59,7 +60,7 @@ total_sppppeen <- x %>%
   summarize(total_budget = sum(total_spend)) %>%
   ungroup()
 
-
+# var <- "language"
 x %>%
   mutate(total_spend = total_spend_formatted) %>%
   mutate(total_spend = ifelse(total_spend == 50, 50, total_spend)) %>%
@@ -463,7 +464,7 @@ The following graphs show how parties use different languages as focus groups an
 ### `r last30days_string`
 
 ```{r}
-
+# debugonce(get_targ_perc)
 lang_targeting <- election_dat30 %>%
 group_split(party) %>%
 map_dfr(get_targ_perc, "language") %>%

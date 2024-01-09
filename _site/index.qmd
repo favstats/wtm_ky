@@ -1,12 +1,12 @@
 ---
 title: Spending
 description-meta: "How do political parties chase your vote, what do they want to keep hidden, and how much money do they spend on it? In the lead-up to the elections, we monitor political microtargeting."
-lang: nl
 ---
 
 ```{r setup, include=FALSE}
+here::i_am("wtm_tw.Rproj")
 
-sets <- jsonlite::fromJSON("../settings.json")
+sets <- jsonlite::fromJSON(here::here("settings.json"))
 
 ## Global options
 knitr::opts_chunk$set(
@@ -31,9 +31,8 @@ options(scipen = 999)
 # options(highcharter.lang = hcoptslang)
 
 
-source("../utils.R")
-source("../party_utils.R")
-
+source(here::here("utils.R"))
+source(here::here("party_utils.R"))
 
 total_spend_id <- election_dat30 %>%
     filter(main_currency == the_currency) %>%

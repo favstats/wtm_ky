@@ -3,15 +3,43 @@ pacman::p_load(knitr, tidyverse, openxlsx, sf, rmarkdown)
 # setwd("C:/Users/fabio/Dropbox/postdoc/microdashboards/wtm_iq/")
 # setwd("..")
 # getwd()
+
+source("cntry.R")
+
+all_dat <- readRDS("data/all_dat.rds")
 color_dat <- readRDS("data/color_dat.rds")
 
-raw <- readRDS("data/election_dat30.rds") %>%
-  rename(internal_id = page_id) %>%
+
+
+if(read_lines("cntry.R") %>% length() > 5){
+  election_dat30 <- readRDS("data/election_dat30.rds")  %>% 
+    select(-contains("party")) %>%
+    left_join(all_dat %>% select(page_id, party))
+}
+
+if(!exists("election_dat30")){
+  election_dat30 <- readRDS("data/election_dat30.rds") 
+}
+
+
+raw <- election_dat30 %>%
+  rename(internal_id = contains("page_id")) %>%
   filter(is.na(no_data)) %>% 
   filter(sources == "wtm")
 
 if(nrow(raw)==0){
-  election_dat30 <- tibble()
+  
+  if(read_lines("cntry.R") %>% length() > 5){
+    election_dat30 <- election_dat30 %>%
+      rename(internal_id = contains("page_id")) %>%
+      filter(is.na(no_data)) %>% 
+      drop_na(party) %>% 
+      filter(party %in% color_dat$party) 
+  } else {
+    election_dat30 <- tibble()
+  }
+  
+  
 } else {
   election_dat30 <- raw %>% 
     drop_na(party) %>% 
@@ -32,8 +60,8 @@ try({
     all_dat <- readRDS("data/all_dat.rds")
     
     write_lines(nrow(all_dat), file = "n_advertisers.txt")
-    
-    dir("_site", full.names = T) %>% keep(~str_detect(.x, "qmd")) %>% walk(quarto::quarto_render)
+    render_it <- possibly(quarto::quarto_render, otherwise = NULL, quiet = F)
+    dir("_site", full.names = T) %>% keep(~str_detect(.x, "qmd")) %>% walk(render_it)
     
     knitr::knit("README.Rmd")
     

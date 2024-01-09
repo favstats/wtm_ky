@@ -1,7 +1,6 @@
 ---
 title: "Spending per Targeting"
 description-meta: "How do political parties chase your vote, what do they want to keep hidden, and how much money do they spend on it? In the lead-up to the elections, we monitor political microtargeting."
-lang: nl
 format:
   html:
     toc: true
@@ -10,6 +9,7 @@ format:
 
 
 ```{r setup, include=FALSE}
+here::i_am("wtm_tw.Rproj")
 
 ## Global options
 knitr::opts_chunk$set(
@@ -31,8 +31,8 @@ library(gt)
 pacman::p_load(knitr, tidyverse, rmarkdown, openxlsx, sf, shiny)
 
 
-source("../utils.R")
-source("../party_utils.R")
+source(here::here("utils.R"))
+source(here::here("party_utils.R"))
 
 ```
 
@@ -60,13 +60,24 @@ How much did the campaigns of political parties spend on different audiences? Th
 
 
 ```{r, fig.width=8, fig.height=5, dpi=300}
-coltototal30 <- election_dat30 %>%
+col_each30 <- election_dat30 %>%
     mutate(total_spend = total_spend_formatted) %>%
     filter(main_currency == the_currency) %>%
-        calc_targeting()
+    group_split(internal_id) %>%
+    map_dfr(~{
+        calc_targeting(.x) %>%
+            mutate(#coalition = .x$coalition[1],
+                   party = .x$party[1],
+                   internal_id = .x$internal_id[1])
+    })
 
-gg <- coltototal30 %>%
-  filter(perc >= 0.01) %>%
+all_spend <- col_each30  %>% 
+  distinct(internal_id, .keep_all = T) %>% 
+  summarise(total = sum(total),
+            total_ads = sum(total_ads))
+
+gg <- col_each30  %>%
+  filter(target != "countries") %>% 
   add_count(target) %>%
   # filter(n == 3) %>%
   mutate(target = case_when(
@@ -87,7 +98,15 @@ gg <- coltototal30 %>%
     T ~ target
   )) %>%
     filter(target != "Unknown") %>%
-    arrange(desc(perc))
+  # group_by(internal_id, target) %>% 
+  # arrange(desc(perc)) %>% 
+  # slice(1) %>% 
+  # ungroup() %>% 
+  group_by(target) %>% 
+  summarize(spend_per = sum(spend_per)) %>% 
+  mutate(perc = spend_per/all_spend$total*100) %>% 
+    arrange(desc(perc)) %>% 
+  filter(perc >= 0.01)
 
 
 library(highcharter)
@@ -129,16 +148,6 @@ gg %>%
 #### By Party
 
 ```{r}
-col_each30 <- election_dat30 %>%
-    mutate(total_spend = total_spend_formatted) %>%
-    filter(main_currency == the_currency) %>%
-    group_split(party) %>%
-    map_dfr(~{
-        calc_targeting(.x) %>%
-            mutate(#coalition = .x$coalition[1],
-                   party = .x$party[1])
-    })
-
 
 
 library(highcharter)
@@ -146,9 +155,18 @@ library(dplyr)
 
 plot_geography <- function(x) {
   # x <- col_each30
-  gg <- x %>%
+   gg <- x %>%
+  filter(target != "countries") %>% 
+  # group_by(internal_id, target, party) %>% 
+  # arrange(desc(perc)) %>% 
+  # slice(1) %>% 
+  # ungroup() %>% 
+  group_by(target, party) %>% 
+  summarize(spend_per = sum(spend_per),
+            total = sum(total))  %>% 
+  ungroup() %>% 
+  mutate(perc = spend_per/total*100) %>%
     filter(perc >= 0.5) %>%
-    add_count(party, target) %>%
     mutate(target = case_when(
       target == "custom_audience" ~ "Custom Audiences",
       target == "countries" ~ "GEOGRAPHY: Entire Country",
@@ -167,13 +185,14 @@ plot_geography <- function(x) {
       TRUE ~ target
     )) %>%
     filter(target != "Unknown") %>%
+    add_count(party, target) %>% 
     arrange(desc(n))
 
-  the_order <- gg %>%
-    complete(party, target, fill = list(n = 0)) %>%
-    mutate(target = fct_reorder(target, n, .desc = FALSE)) %>%
-    pull(target) %>%
-    levels()
+  # the_order <- gg %>%
+  #   complete(party, target, fill = list(n = 0)) %>%
+  #   mutate(target = fct_reorder(target, n, .desc = FALSE)) %>%
+  #   pull(target) %>%
+  #   levels()
 
 
 
@@ -181,8 +200,22 @@ plot_geography <- function(x) {
   mutate(spend_perlab = scales::comma(round(spend_per))) %>%
     split(.$party) %>%
     map(~ {
-             the_color <- color_dat$colors[color_dat$party == .x$party[1]]
-      hchart(.x, type = "bar", hcaes(x = target, y = perc), color = the_color) %>%
+      the_color <-
+        color_dat$colors[color_dat$party == .x$party[1]]
+      
+         the_order <- .x %>%
+            filter(party == .x$party[1]) %>% 
+           arrange(desc(perc)) %>% 
+            mutate(target = fct_reorder(target, perc, .desc = T)) %>%
+            pull(target) %>%
+            levels()
+      # print(the_order)
+      daaat <-.x %>% 
+        dplyr::mutate(target = as.factor(target)) %>% 
+        dplyr::mutate(target = factor(target, levels =  the_order)) %>% 
+        arrange(target)
+      
+      hchart(daaat, type = "bar", hcaes(x = target, y = perc), color = the_color) %>%
             hc_plotOptions(bar = list(horizontal = TRUE, stacking = "normal")) %>%
             hc_yAxis(title = list(text = "% Party Budget spent on targeting method"), max = 100, min = 0) %>%
             hc_xAxis(title = "", labels = list(style = list(fontSize = "10px"))) %>%
@@ -191,7 +224,7 @@ plot_geography <- function(x) {
               pointFormat = paste0("<b>{point.target}</b><br>% of total budget spent: {point.y:.1f}%<br>a total of ", currency_symbol,           "{point.spend_perlab} on this method."),
               headerFormat = ""
             ) %>%
-            hc_title(text = unique(.x$party), align = "left", style = list(fontWeight = "bold")) %>%
+            hc_title(text = unique(daaat$party), align = "left", style = list(fontWeight = "bold")) %>%
         hc_size(height = 300) %>%
     hc_exporting(
       enabled = TRUE
@@ -249,13 +282,24 @@ tags$div(class = "container", do.call(tags$div, rows))
 
 
 ```{r, fig.width=8, fig.height=5, dpi=300}
-coltototal7 <- election_dat7 %>%
+col_each7 <- election_dat7 %>%
     mutate(total_spend = total_spend_formatted) %>%
     filter(main_currency == the_currency) %>%
-        calc_targeting()
+    group_split(internal_id) %>%
+    map_dfr(~{
+        calc_targeting(.x) %>%
+            mutate(#coalition = .x$coalition[1],
+                   party = .x$party[1],
+                   internal_id = .x$internal_id[1])
+    })
 
-gg <- coltototal7 %>%
-  filter(perc >= 0.01) %>%
+all_spend <- col_each7  %>% 
+  distinct(internal_id, .keep_all = T) %>% 
+  summarise(total = sum(total),
+            total_ads = sum(total_ads))
+
+gg <- col_each7  %>%
+  filter(target != "countries") %>%
   add_count(target) %>%
   # filter(n == 3) %>%
   mutate(target = case_when(
@@ -276,7 +320,18 @@ gg <- coltototal7 %>%
     T ~ target
   )) %>%
     filter(target != "Unknown") %>%
-    arrange(desc(perc))
+  # group_by(internal_id, target) %>% 
+  # arrange(desc(perc)) %>% 
+  # slice(1) %>% 
+  # ungroup() %>% 
+  group_by(target) %>% 
+  summarize(spend_per = sum(spend_per)) %>% 
+  mutate(perc = spend_per/all_spend$total*100) %>% 
+    arrange(desc(perc))%>% 
+  filter(perc >= 0.01)
+
+
+library(highcharter)
 
 the_order <- gg %>%
   tidyr::complete(target, fill = list(perc = 0)) %>%
@@ -299,31 +354,17 @@ gg %>%
   highcharter::hc_credits(
     enabled = TRUE,
     text = "Source: Meta Ad Library. Data Viz: Fabio Votta (@favstats)."
-  ) %>%
+  )%>%
     hc_exporting(
       enabled = TRUE
     )
+
+
 
 ```
 
 
 #### By Party
-
-```{r, fig.width=12, fig.height=9, dpi=300}
-
-col_each7 <- election_dat7 %>%
-    mutate(total_spend = total_spend_formatted) %>%
-    filter(main_currency == the_currency) %>%
-    group_split(party) %>%
-    map_dfr(~{
-        calc_targeting(.x) %>%
-            mutate(#coalition = .x$coalition[1],
-                   party = .x$party[1])
-    })
-
-
-
-```
 
 ```{r echo=FALSE, results='asis'}
 
@@ -358,3 +399,95 @@ tags$div(class = "container", do.call(tags$div, rows))
 
 
 :::
+
+
+
+
+
+```{r,eval = F}
+overall_spend <- col_each30 %>% 
+  filter(target != "countries") %>% 
+  group_by(internal_id) %>% 
+  arrange(desc(perc)) %>% 
+  slice(1) %>% 
+  ungroup() %>% 
+  summarize(spend_per = sum(spend_per),
+            total = sum(total))  %>% 
+  mutate(perc = spend_per/total*100) %>% 
+  filter(max(perc) == perc) %>% 
+  mutate(max_calc = case_when(
+    # max(perc_ads)==perc_ads ~  "Percentage of ads with at least\none targeting/exclusion criterion",
+    max(perc)==perc ~  "Percentage"
+  )) %>% 
+  mutate(val = case_when(
+    # max_calc == "Percentage of ads with at least\none targeting/exclusion criterion" ~ perc_ads,
+    max_calc == "Percentage" ~ perc
+  )) %>% 
+  mutate(
+    labb = case_when(
+      # max_calc == "Percentage of ads with at least\none targeting/exclusion criterion" ~ glue::glue("{round(perc_ads,2)}%\n({ads_per} out of {total_ads} total ads)"),
+      max_calc == "Percentage" ~ glue::glue("{round(perc,2)}%\n(€{scales::number_format()(round(spend_per))} out of €{scales::number_format()(total)})"))) 
+
+
+hchart(overall_spend, type = "bar", hcaes(x = max_calc, y = perc), color = "grey") %>%
+            hc_plotOptions(bar = list(horizontal = TRUE, stacking = "normal")) %>%
+            hc_yAxis(title = list(text = "% Party Budget spent on targeting method"), max = 100, min = 0) %>%
+            hc_xAxis(title = "", labels = list(style = list(fontSize = "10px"))) %>%
+            hc_add_theme(hc_theme_google()) %>%
+           highcharter::hc_tooltip(
+              pointFormat = paste0("<b>At Least One Targeting/Exclusion Criterion</b><br>% of total budget spent: {point.y:.1f}%<br>a total of ", currency_symbol,           "{point.spend_perlab} on ad with at least one targeting or exclusion criterion."),
+              headerFormat = ""
+            ) %>%
+            hc_title(text = "Percentage of ad budget spent with at least\none targeting/exclusion criterion", align = "left", style = list(fontWeight = "bold")) %>%
+        hc_size(height = 300) %>%
+    hc_exporting(
+      enabled = TRUE
+    )
+```
+```{r, eval = F}
+col_each30 %>% 
+  filter(target != "countries") %>% 
+  group_by(internal_id) %>% 
+  arrange(desc(perc)) %>% 
+  slice(1) %>% 
+  ungroup() %>% 
+  group_by(party) %>% 
+  summarize(spend_per = sum(spend_per),
+            total = sum(total)) %>% 
+  ungroup() %>% 
+  # arrange(desc(perc_ads)) %>% 
+  mutate(perc = spend_per/total*100) %>% 
+  group_by(party) %>% 
+      filter(max(perc)==perc) %>% 
+  mutate(max_calc = case_when(
+    # max(perc_ads)==perc_ads ~  "Percentage of ads with at least\none targeting/exclusion criterion",
+    max(perc)==perc ~  "Percentage of ad budget spent with at least\none targeting/exclusion criterion"
+  )) %>% 
+  mutate(val = case_when(
+    # max_calc == "Percentage of ads with at least\none targeting/exclusion criterion" ~ perc_ads,
+    max_calc == "Percentage of ad budget spent with at least\none targeting/exclusion criterion" ~ perc
+  )) %>% 
+  mutate(
+    labb = case_when(
+      # max_calc == "Percentage of ads with at least\none targeting/exclusion criterion" ~ glue::glue("{round(perc_ads,2)}% ({ads_per} out of {total_ads})"),
+      max_calc == "Percentage of ad budget spent with at least\none targeting/exclusion criterion" ~ glue::glue("{round(perc,2)}% (€{scales::number_format()(round(spend_per))})"))) %>% 
+  distinct(party, .keep_all = T) %>% 
+  ungroup() %>% 
+  mutate(party = fct_reorder(party, val)) %>%
+  drop_na() %>% 
+  # %>%
+  # ungroup() %>% 
+  # )) %>% 
+  # mutate()
+  ggplot(aes(party, val, fill = party)) +
+  geom_col() +
+  geom_text(aes(y = 5, label = labb), hjust = 0) +
+  labs(y = "Percentage", x = "") +
+  facet_wrap(~max_calc) +
+  coord_flip() +
+  scale_fill_parties() +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+```
+
