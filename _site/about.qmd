@@ -6,7 +6,8 @@ format:
 ---
 
 ```{r, echo = F, warning=F, message=F}
-here::i_am("wtm_tw.Rproj")
+# dir()
+here::i_am("wtm_ad.Rproj")
 
 library(tidyverse)
 sets <- jsonlite::fromJSON(here::here("settings.json"))
