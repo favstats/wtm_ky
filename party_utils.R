@@ -9,7 +9,7 @@ library(httr)
 
 custom <- F
 
-here::i_am("wtm_ad.Rproj")
+here::i_am("wtm_ky.Rproj")
 
 source(here::here("cntry.R"))
 
