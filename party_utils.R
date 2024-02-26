@@ -66,9 +66,18 @@ country_codes <- c("AD", "AL", "AM", "AR", "AT",
                    "VE", "ZA")
 
 
-download.file(paste0("https://data-api.whotargets.me/advertisers-export-csv?countries.alpha2=", str_to_lower(sets$cntry)), destfile = "data/wtm_advertisers.csv")
+try({
+  download.file(paste0("https://data-api.whotargets.me/advertisers-export-csv?countries.alpha2=", str_to_lower(sets$cntry)), destfile = "data/wtm_advertisers.csv")
+  
+  thedat <- read_csv(here::here("data/wtm_advertisers.csv")) %>% 
+    filter(entities.short_name != "ZZZ")
+  
+})
 
-thedat <- read_csv(here::here("data/wtm_advertisers.csv"))
+if(!exists("thedat")){
+  thedat <- tibble(no_data = NULL)
+}
+
 
 if(!custom){
   if(sets$cntry %in% country_codes & nrow(thedat)!=0){
@@ -81,7 +90,8 @@ if(!custom){
       rename(party = short_name) %>% 
       select(party, contains("color")) %>% 
       setColors() %>% 
-      rename(colors = color)
+      rename(colors = color) %>% 
+      filter(party != "ZZZ")
   } else {
     polsample <- readRDS(here::here("data/polsample.rds"))
     partycolorsdataset  <- readRDS(here::here("data/partycolorsdataset.rds"))
@@ -95,12 +105,12 @@ if(!custom){
       select(party, color = hex)  %>% 
       setColors() %>% 
       rename(colors = color) %>% 
-      drop_na(party)
+      drop_na(party)  %>% 
+      filter(party != "ZZZ")
   }
   
   saveRDS(color_dat, here::here("data/color_dat.rds"))
 } 
-
 
 
 
