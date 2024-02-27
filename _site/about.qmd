@@ -58,7 +58,7 @@ card <- div(
         style = "display: flex; justify-content: center;",
         img(
           class = "card-img", 
-          src = "https://www.uva.nl/binaries/_ht_1677599571673/cardmedium/content/gallery/personen/v/o/fabio-votta.jpg",
+          src = "https://pbs.twimg.com/profile_images/1662875733704822784/C4T3VPy0_400x400.jpg",
           style = "max-width: 500px;"  # Adjusted max-width to control image size
         )
       )

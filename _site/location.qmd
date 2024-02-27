@@ -211,6 +211,8 @@ if(nrow(region_dat)!=0) {
 
 :::
 
+
+
 ## Geographical Exclusion
 
 The following graphs depict the geographic locations that certain political advertisements will exclude on Meta, along with the amounts that parties spent on these exclusions.
