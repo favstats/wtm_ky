@@ -241,13 +241,13 @@ add_ribbons <- function(x, adv, col) {
 
 
 
-get_targeting <- function(id, timeframe = "LAST_30_DAYS") {
+get_targeting <- function(id, timeframe = "LAST_30_DAYS", lang = "en-GB") {
   
   url <- "https://www.facebook.com/api/graphql/"
   
   heads_up <- httr::add_headers(`User-Agent` = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0",
                                 Accept = "*/*",
-                                `Accept-Language` = 'en-US,en;q=0.5',
+                                `Accept-Language` = paste0(lang, ',', stringr::str_split(lang, "-") %>% unlist() %>% .[1],';q=0.5'),
                                 `X-FB-Friendly-Name` = "AdLibraryPageAudienceTabQuery",
                                 `X-FB-LSD`= "AVrNiQCSUnA",
                                 `Alt-Used`= "www.facebook.com",
@@ -278,7 +278,7 @@ get_targeting <- function(id, timeframe = "LAST_30_DAYS") {
     
     heads_up <- httr::add_headers(`User-Agent` = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0",
                                   Accept = "*/*",
-                                  `Accept-Language` = 'en-US,en;q=0.5',
+                                  `Accept-Language` = paste0(lang, ',', stringr::str_split(lang, "-") %>% unlist() %>% .[1],';q=0.5'),
                                   `X-FB-Friendly-Name` = "AdLibraryPageAudienceTabQuery",
                                   `X-FB-LSD`= "AVrNiQCSUnA",
                                   `Alt-Used`= "www.facebook.com",
