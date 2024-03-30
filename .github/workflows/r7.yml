@@ -1,7 +1,7 @@
 name: "7 Timeframe"
 on:
   schedule:
-    - cron: '0 6,7,8,9,18,19,20,21 * * *'
+    - cron: '0 10,21 * * *'
 
 jobs:
   update-data:
@@ -68,8 +68,6 @@ jobs:
         shell: Rscript {0}
       - name: "Script - Run"
         run: Rscript 'get_audiences.R' 7
-      - name: "Script - Update Dashboard"
-        run: Rscript 'start.R'
       - name: "Commit"
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
